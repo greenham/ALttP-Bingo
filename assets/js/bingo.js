@@ -33,7 +33,7 @@ function bingosetup() {
         {
           $square = $('.row'+(row+1)+'.col'+(col+1));
           $square
-            .html('<strong>'+data.board[row][col].name + '</strong>')
+            .html('<strong>'+data.board[row][col].name + '</strong><br>D: ' + data.board[row][col].difficulty)
             .attr('title', 'Nearest Flute: ' + data.board[row][col].nearest_flute_location);
         }
       }
