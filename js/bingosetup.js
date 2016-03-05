@@ -60,6 +60,8 @@ function bingosetup() {
       return false;
     }
 
+    bingoOpts.seed = data.seed;
+
     for (row = 0; row < 5; row++)
     {
       for (col = 0; col < 5; col++)
