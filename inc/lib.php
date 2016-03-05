@@ -48,7 +48,7 @@ function get_goals()
 {
     $db = init_db();
 
-    $result = $db->query("SELECT * FROM `goals`");
+    $result = $db->query("SELECT * FROM `bingo_goals`");
     if (!$result)
     {
         error_log("Invalid query: " . mysql_error());
@@ -89,8 +89,6 @@ function generate_board($seed, $mode = 'normal', $size = 5)
 
     // generate a magic square of difficulty ratings
     $magic_square = magic_square($size);
-
-    // @TODO: Populate the board in a more random order instead of L-to-R
 
     for ($x = 0; $x < $size; $x++)
     {

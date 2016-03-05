@@ -23,10 +23,10 @@ SET time_zone = "+00:00";
 -- --------------------------------------------------------
 
 --
--- Table structure for table `goals`
+-- Table structure for table `bingo_goals`
 --
 
-CREATE TABLE `goals` (
+CREATE TABLE `bingo_goals` (
   `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(100) NOT NULL,
   `difficulty` tinyint(3) UNSIGNED NOT NULL,
@@ -34,10 +34,10 @@ CREATE TABLE `goals` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `goals`
+-- Dumping data for table `bingo_goals`
 --
 
-INSERT INTO `goals` (`id`, `name`, `difficulty`, `nearest_flute_location`) VALUES
+INSERT INTO `bingo_goals` (`id`, `name`, `difficulty`, `nearest_flute_location`) VALUES
 (1, 'Ganon''s Tower, No Hammer', 25, 1),
 (2, '7th Crystal', 25, 1),
 (3, 'Complete Ganon''s Tower', 24, 1),
@@ -157,9 +157,9 @@ INSERT INTO `goals` (`id`, `name`, `difficulty`, `nearest_flute_location`) VALUE
 --
 
 --
--- Indexes for table `goals`
+-- Indexes for table `bingo_goals`
 --
-ALTER TABLE `goals`
+ALTER TABLE `bingo_goals`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -167,9 +167,9 @@ ALTER TABLE `goals`
 --
 
 --
--- AUTO_INCREMENT for table `goals`
+-- AUTO_INCREMENT for table `bingo_goals`
 --
-ALTER TABLE `goals`
+ALTER TABLE `bingo_goals`
   MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=114;
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
