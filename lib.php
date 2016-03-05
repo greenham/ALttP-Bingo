@@ -105,7 +105,6 @@ function generate_board($seed, $mode = 'normal', $size = 5)
 
             // remove it from the pool
             unset($goals[$difficulty][$goal->id]);
-
         }
     }
 

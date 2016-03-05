@@ -60,7 +60,9 @@ function bingosetup() {
       "width=220, height=460, toolbar=no, location=no, status=no, menubar=no, scrollbars=no, resizable=no"
     );
 
-    popout.focus();
+    if (window.focus) {
+      popout.focus();
+    }
   });
 
   // color toggling
