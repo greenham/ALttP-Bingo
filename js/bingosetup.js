@@ -71,7 +71,7 @@ function bingosetup() {
       }
     }
 
-    results.append ("<p>ALttP Bingo &emsp;Seed: <strong>" + bingoOpts.seed + "</strong>&emsp;Card type: <strong>" + cardType + "</strong></p>");
+    results.append ("<p>ALttP Bingo <strong>v" + data.version + "</strong> &emsp;Seed: <strong>" + bingoOpts.seed + "</strong>&emsp;Card type: <strong>" + cardType + "</strong></p>");
   });
 }
 

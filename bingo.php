@@ -12,7 +12,7 @@ if (!isset($seed) || !is_numeric($seed))
 try
 {
     $board = generate_board($seed);
-    output_json(['board' => $board, 'seed' => $seed]);
+    output_json(['board' => $board, 'seed' => $seed, 'version' => BINGO_VERSION]);
 }
 catch (Exception $e)
 {

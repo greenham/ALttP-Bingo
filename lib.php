@@ -2,6 +2,8 @@
 
 require_once('config/db.php');
 
+const BINGO_VERSION = "2.0";
+
 function init_db()
 {
     global $db_config;
