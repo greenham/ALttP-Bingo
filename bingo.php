@@ -4,10 +4,17 @@ require_once('lib.php');
 
 extract($_REQUEST);
 
-if (isset($seed) && is_numeric($seed))
+if (!isset($seed) || !is_numeric($seed))
 {
-    $board = generate_board($seed);
-    output_json(['board' => $board]);
+    $seed = make_seed();
 }
 
-//output_json(['r' => rand(1, 5)]);
+try
+{
+    $board = generate_board($seed);
+    output_json(['board' => $board, 'seed' => $seed]);
+}
+catch (Exception $e)
+{
+    output_json(['error' => $e->getMessage()]);
+}

@@ -53,22 +53,24 @@ function bingosetup() {
   var results = $("#results");
 
   $.post('/bingo.php', bingoOpts, function(data, textStatus, xhr) {
-    console.log(data);
-  });
-
-  /*results.append ("<p>ALttP Bingo <strong>" + bingoList["info"].version + "</strong>&emsp;Seed: <strong>" +
-    bingoOpts.seed + "</strong>&emsp;Card type: <strong>" + cardType + "</strong></p>");*/
-
-
-  /*var bingoFunc = ootBingoGenerator;
-  var bingoBoard = bingoFunc(bingoList, bingoOpts);
-  if(bingoBoard) {
-    for (i=1; i<=25; i++) {
-      $('#slot'+i).append(bingoBoard[i].name);
+    //console.log(data);
+    if (data.error || !data.board)
+    {
+      alert('Card could not be generated!');
+      return false;
     }
-  } else {
-    alert('Card could not be generated');
-  }*/
+
+    for (row = 0; row < 5; row++)
+    {
+      for (col = 0; col < 5; col++)
+      {
+        var className = '.row'+(row+1)+'.col'+(col+1);
+        $(className).append(data.board[row][col].name + ' (' + data.board[row][col].difficulty + ')');
+      }
+    }
+
+    results.append ("<p>ALttP Bingo &emsp;Seed: <strong>" + bingoOpts.seed + "</strong>&emsp;Card type: <strong>" + cardType + "</strong></p>");
+  });
 }
 
 $(bingosetup);
