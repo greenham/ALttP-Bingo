@@ -1,5 +1,47 @@
 function bingosetup() {
-  // bingo popouts
+  var bingoOpts = {
+    seed: getUrlParameter('seed') || Math.ceil(999999 * Math.random()).toString(),
+    mode: 'normal',//getUrlParameter('mode') || 'normal',
+  };
+
+  var prettyMode = {
+    'normal': 'Normal',
+    'short': 'Short',
+    'long': 'Long'
+  };
+
+  var cardType = prettyMode[bingoOpts.mode];
+
+  var generateBoard = function()
+  {
+    // generate the bingos
+    $.post('bingo.php', bingoOpts, function(data, textStatus, xhr) {
+      if (data.error || !data.board)
+      {
+        alert('Card could not be generated!');
+        return false;
+      }
+
+      bingoOpts.seed = data.seed;
+
+      // append this seed to the URL, add to history
+      history.pushState(bingoOpts, "", "?seed="+bingoOpts.seed)
+
+      for (row = 0; row < 5; row++)
+      {
+        for (col = 0; col < 5; col++)
+        {
+          $('.row'+(row+1)+'.col'+(col+1)).html(data.board[row][col].name + ' [' + data.board[row][col].difficulty + ']');
+        }
+      }
+
+      $("span#debug").html("<p>ALttP Bingo <strong>v" + data.version + "</strong> &emsp;Seed: <strong>" + bingoOpts.seed + "</strong>&emsp;Card type: <strong>" + cardType + "</strong></p>");
+    });
+  };
+
+  generateBoard();
+
+  // handle bingo popouts
   $('.popout').click(function() {
     var mode = null;
     var line = $(this).attr('id');
@@ -36,7 +78,8 @@ function bingosetup() {
 
   // new board
   $("#new-board-btn").on('click', function(e) {
-    window.location.href = "/";
+    bingoOpts.seed = Math.ceil(999999 * Math.random()).toString();
+    generateBoard();
   });
 
   // dat hover tho
@@ -54,45 +97,6 @@ function bingosetup() {
 
   $("#tlbr").hover(function() { $(".tlbr").addClass("hover"); }, function() { $(".tlbr").removeClass("hover"); });
   $("#bltr").hover(function() { $(".bltr").addClass("hover"); }, function() { $(".bltr").removeClass("hover"); });
-
-  // set up the bingos
-  var bingoOpts = {
-    seed: getUrlParameter('seed') || Math.ceil(999999 * Math.random()).toString(),
-    mode: 'normal',//getUrlParameter('mode') || 'normal',
-  };
-
-  var prettyMode = {
-    'normal': 'Normal',
-    'short': 'Short',
-    'long': 'Long'
-  };
-
-  var cardType = prettyMode[bingoOpts.mode];
-  var $results = $("#results");
-
-  // generate the bingos
-  $.post('bingo.php', bingoOpts, function(data, textStatus, xhr) {
-    if (data.error || !data.board)
-    {
-      alert('Card could not be generated!');
-      return false;
-    }
-
-    bingoOpts.seed = data.seed;
-
-    // append this seed to the URL, add to history
-    history.pushState(bingoOpts, "", "?seed="+bingoOpts.seed)
-
-    for (row = 0; row < 5; row++)
-    {
-      for (col = 0; col < 5; col++)
-      {
-        $('.row'+(row+1)+'.col'+(col+1)).append(data.board[row][col].name + ' [' + data.board[row][col].difficulty + ']');
-      }
-    }
-
-    $results.append ("<p>ALttP Bingo <strong>v" + data.version + "</strong> &emsp;Seed: <strong>" + bingoOpts.seed + "</strong>&emsp;Card type: <strong>" + cardType + "</strong></p>");
-  });
 }
 
 $(bingosetup);
