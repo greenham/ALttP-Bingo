@@ -1,16 +1,27 @@
 function bingosetup() {
+  // bingo popouts
   $('.popout').click(function() {
     var mode = null;
     var line = $(this).attr('id');
     var name = $(this).html();
     var items = [];
     var cells = $('#bingo .'+ line);
-    for (var i = 0; i < 5; i++) {
-      items.push($(cells[i]).html());
-    };
-    window.open('popout.html#'+ name +'='+ items.join(';;;'),"_blank","toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=220, height=460");
+
+    for (var i = 0; i < 5; i++)
+    {
+      items.push(encodeURIComponent($(cells[i]).html()));
+    }
+
+    var popout = window.open(
+      'popout.html#'+ name +'='+ items.join(';;;'),
+      "_blank",
+      "width=220, height=460, toolbar=no, location=no, status=no, menubar=no, scrollbars=no, resizable=no"
+    );
+
+    popout.focus();
   });
 
+  // color toggling
   $("#bingo tr td:not(.popout), #selected td").toggle(
     function () {
       $(this).addClass("greensquare");
@@ -23,6 +34,12 @@ function bingosetup() {
     }
   );
 
+  // new board
+  $("#new-board-btn").on('click', function(e) {
+    window.location.href = "/";
+  });
+
+  // dat hover tho
   $("#row1").hover(function() { $(".row1").addClass("hover"); }, function() { $(".row1").removeClass("hover"); });
   $("#row2").hover(function() { $(".row2").addClass("hover"); }, function() { $(".row2").removeClass("hover"); });
   $("#row3").hover(function() { $(".row3").addClass("hover"); }, function() { $(".row3").removeClass("hover"); });
@@ -38,6 +55,7 @@ function bingosetup() {
   $("#tlbr").hover(function() { $(".tlbr").addClass("hover"); }, function() { $(".tlbr").removeClass("hover"); });
   $("#bltr").hover(function() { $(".bltr").addClass("hover"); }, function() { $(".bltr").removeClass("hover"); });
 
+  // set up the bingos
   var bingoOpts = {
     seed: getUrlParameter('seed') || Math.ceil(999999 * Math.random()).toString(),
     mode: 'normal',//getUrlParameter('mode') || 'normal',
@@ -50,10 +68,10 @@ function bingosetup() {
   };
 
   var cardType = prettyMode[bingoOpts.mode];
-  var results = $("#results");
+  var $results = $("#results");
 
-  $.post('/bingo.php', bingoOpts, function(data, textStatus, xhr) {
-    //console.log(data);
+  // generate the bingos
+  $.post('bingo.php', bingoOpts, function(data, textStatus, xhr) {
     if (data.error || !data.board)
     {
       alert('Card could not be generated!');
@@ -62,16 +80,18 @@ function bingosetup() {
 
     bingoOpts.seed = data.seed;
 
+    // append this seed to the URL, add to history
+    history.pushState(bingoOpts, "", "?seed="+bingoOpts.seed)
+
     for (row = 0; row < 5; row++)
     {
       for (col = 0; col < 5; col++)
       {
-        var className = '.row'+(row+1)+'.col'+(col+1);
-        $(className).append(data.board[row][col].name + ' (' + data.board[row][col].difficulty + ')');
+        $('.row'+(row+1)+'.col'+(col+1)).append(data.board[row][col].name + ' [' + data.board[row][col].difficulty + ']');
       }
     }
 
-    results.append ("<p>ALttP Bingo <strong>v" + data.version + "</strong> &emsp;Seed: <strong>" + bingoOpts.seed + "</strong>&emsp;Card type: <strong>" + cardType + "</strong></p>");
+    $results.append ("<p>ALttP Bingo <strong>v" + data.version + "</strong> &emsp;Seed: <strong>" + bingoOpts.seed + "</strong>&emsp;Card type: <strong>" + cardType + "</strong></p>");
   });
 }
 
