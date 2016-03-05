@@ -31,7 +31,10 @@ function bingosetup() {
       {
         for (col = 0; col < 5; col++)
         {
-          $('.row'+(row+1)+'.col'+(col+1)).html('<strong>'+data.board[row][col].name + '</strong>');//<br>D: ' + data.board[row][col].difficulty + ' | F: ' + data.board[row][col].nearest_flute_location);
+          $square = $('.row'+(row+1)+'.col'+(col+1));
+          $square
+            .html('<strong>'+data.board[row][col].name + '</strong>')
+            .attr('title', 'Nearest Flute: ' + data.board[row][col].nearest_flute_location);
         }
       }
 
