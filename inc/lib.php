@@ -79,6 +79,38 @@ function get_goals_by_difficulty()
     return $goals_grouped;
 }
 
+function get_goal_stats()
+{
+    $db = init_db();
+
+    $stats = [];
+    $difficulties = 25;
+    $flute_locations = 8;
+
+    $select[] = "COUNT(*) AS `total_goals`";
+    for($i = 1; $i <= $difficulties; $i++) {
+        $select[] = "SUM(CASE WHEN (`difficulty` = {$i}) THEN 1 ELSE 0 END) AS `{$i}_difficulty_count`";
+    }
+
+    for($i = 1; $i <= $flute_locations; $i++)
+    {
+        $select[] = "SUM(CASE WHEN (`nearest_flute_location` = {$i}) THEN 1 ELSE 0 END) AS `{$i}_flute_location_count`";
+    }
+
+    $stats_sql = "SELECT ";
+    $stats_sql .= implode(', ', $select);
+    $stats_sql .= " FROM `bingo_goals`";
+
+    $result = $db->query($stats_sql);
+    if (!$result)
+    {
+        error_log("Invalid query: " . mysql_error());
+        return $stats;
+    }
+
+    return $result->fetch_assoc();
+}
+
 function generate_board($seed, $mode = 'normal', $size = 5)
 {
     srand($seed);
