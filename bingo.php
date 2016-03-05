@@ -1,6 +1,6 @@
 <?php
 
-require_once('lib.php');
+require_once('inc/lib.php');
 
 extract($_REQUEST);
 
