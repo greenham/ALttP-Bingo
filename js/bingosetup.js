@@ -40,8 +40,7 @@ function bingosetup() {
 
   var bingoOpts = {
     seed: getUrlParameter('seed') || Math.ceil(999999 * Math.random()).toString(),
-    mode: getUrlParameter('mode') || 'normal',
-    lang: getUrlParameter('lang') || 'name'
+    mode: 'normal',//getUrlParameter('mode') || 'normal',
   };
 
   var prettyMode = {
@@ -52,8 +51,13 @@ function bingosetup() {
 
   var cardType = prettyMode[bingoOpts.mode];
   var results = $("#results");
-  results.append ("<p>ALttP Bingo <strong>" + bingoList["info"].version + "</strong>&emsp;Seed: <strong>" +
-    bingoOpts.seed + "</strong>&emsp;Card type: <strong>" + cardType + "</strong></p>");
+
+  $.post('/bingo.php', bingoOpts, function(data, textStatus, xhr) {
+    console.log(data);
+  });
+
+  /*results.append ("<p>ALttP Bingo <strong>" + bingoList["info"].version + "</strong>&emsp;Seed: <strong>" +
+    bingoOpts.seed + "</strong>&emsp;Card type: <strong>" + cardType + "</strong></p>");*/
 
 
   /*var bingoFunc = ootBingoGenerator;
