@@ -43,7 +43,6 @@ function bingosetup() {
 
   // handle bingo popouts
   $('.popout').click(function() {
-    var mode = null;
     var line = $(this).attr('id');
     var name = $(this).html();
     var items = [];
@@ -54,11 +53,10 @@ function bingosetup() {
       items.push(encodeURIComponent($(cells[i]).html()));
     }
 
-    var popout = window.open(
-      'popout.html#'+ name +'='+ items.join(';;;'),
-      "_blank",
-      "width=220, height=460, toolbar=no, location=no, status=no, menubar=no, scrollbars=no, resizable=no"
-    );
+    var popoutUrl = 'popout.html#'+ name +'='+ items.join('|||');
+    var popoutOptions = "width=220, height=460, toolbar=no, location=no, status=no, menubar=no, scrollbars=no, resizable=no";
+
+    var popout = window.open(popoutUrl, "_blank", popoutOptions);
 
     if (window.focus) {
       popout.focus();
