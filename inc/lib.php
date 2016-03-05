@@ -1,6 +1,6 @@
 <?php
 
-require_once('config/db.php');
+require_once('inc/db.php');
 
 const BINGO_VERSION = "2.0";
 
