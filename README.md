@@ -1,7 +1,7 @@
 # alttp-bingo
 Bingo Generator for A Link to the Past Speedrunners
 
-Much of the frontend code has been taken from the [SpeedRunsLive bingo generators](https://github.com/gustafsonk/SRL/tree/master/srl/pages/tools), specifically the [OoT-Bingo](https://github.com/giuocob/OoT-Bingo) generator. The generator itself has been rewritten with PHP/MySQL with the idea being to support more advanced features and filters for the board generation in the future.
+Much of the frontend code has been taken from the [SpeedRunsLive bingo generators](https://github.com/gustafsonk/SRL/tree/master/srl/pages/tools), specifically the [OoT-Bingo](https://github.com/giuocob/OoT-Bingo) generator. The generator itself has been ported to PHP/MySQL with the idea being to support more advanced features and filters for the board generation in the future.
 
 ## Feature Ideas
 - Add restrictions for bingos based on flute locations (e.g. a maximum of 2 in any 1 location in a given bingo)

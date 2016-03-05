@@ -48,7 +48,6 @@ function get_goals()
 {
     $db = init_db();
 
-    // @TODO: caching
     $result = $db->query("SELECT * FROM `goals`");
     if (!$result)
     {
@@ -152,10 +151,10 @@ function magic_square($size = 5)
             $mt[$row][$col] = $i;
         }
 
-        // shuffle the arrays
-        shuffle($mt);
+        // sort the arrays
+        ksort($mt);
         for ($i = 0; $i < $size; $i++) {
-            shuffle($mt[$i]);
+            ksort($mt[$i]);
         }
 
         return $mt;
