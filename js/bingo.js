@@ -31,7 +31,7 @@ function bingosetup() {
       {
         for (col = 0; col < 5; col++)
         {
-          $('.row'+(row+1)+'.col'+(col+1)).html(data.board[row][col].name + ' [' + data.board[row][col].difficulty + ']');
+          $('.row'+(row+1)+'.col'+(col+1)).html(data.board[row][col].name);// + ' [' + data.board[row][col].difficulty + ']');
         }
       }
 

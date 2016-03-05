@@ -161,6 +161,6 @@ function magic_square($size = 5)
 
         return $mt;
     } else {
-        return 'The algorithm is not ready for even numbers yet!';
+        throw new Exception('The algorithm is not ready for even numbers yet!');
     }
 }
