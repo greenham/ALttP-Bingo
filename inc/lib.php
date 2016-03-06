@@ -139,6 +139,23 @@ function generate_board($seed, $mode = 'normal', $size = 5)
         }
     }
 
+    $transform = rand(0,4);
+    switch ($transform)
+    {
+        case 1:
+            $board = reflect_diaganol_tlbr($board);
+            break;
+        case 2:
+            $board = reflect_diaganol_trbl($board);
+            break;
+        case 3:
+            $board = rotate_clockwise($board);
+            break;
+        case 4:
+            $board = rotate_counterclockwise($board);
+            break;
+    }
+
     return $board;
 }
 
@@ -148,7 +165,7 @@ function generate_board($seed, $mode = 'normal', $size = 5)
 ## Email:   siamak.aghaeipour@gmail.com
 ## Website: http://blacksrc.com
 */
-function magic_square($size = 5)
+function magic_square($size = 5, $randomize = true)
 {
     if ($size %2 != 0)
     {
@@ -193,4 +210,90 @@ function magic_square($size = 5)
     } else {
         throw new Exception('The algorithm is not ready for even numbers yet!');
     }
+}
+
+function reflect_diaganol_tlbr($board)
+{
+    // change x,y -> y,x for everything except the tlbr diag (0,0, 1,1, 2,2, 3,3, 4,4)
+    $swapped = [];
+    for ($x = 0; $x < 5; $x++)
+    {
+        for ($y = 0; $y < 5; $y++)
+        {
+            if ($x != $y && !in_array("{$x}{$y}", $swapped) && !in_array("{$x}{$y}", $swapped))
+            {
+                $first = $board[$x][$y];
+                $second = $board[$y][$x];
+
+                $board[$x][$y] = $second;
+                $board[$y][$x] = $first;
+
+                // don't swap this combo again
+                $swapped[] = "{$x}{$y}";
+                $swapped[] = "{$y}{$x}";
+            }
+        }
+    }
+
+    return $board;
+}
+
+function reflect_diaganol_trbl($board)
+{
+    $swaps = [
+        [[0,3], [1,4]],
+        [[0,2], [2,4]],
+        [[0,1], [3,4]],
+        [[1,2], [2,3]],
+        [[1,1], [3,3]],
+        [[0,0], [4,4]],
+        [[1,0], [4,3]],
+        [[2,1], [3,2]],
+        [[2,0], [4,2]],
+        [[3,0], [4,1]],
+    ];
+
+    foreach ($swaps as $swap)
+    {
+        $first = $board[$swap[0][0]][$swap[0][1]];
+        $second = $board[$swap[1][0]][$swap[1][1]];
+        $board[$swap[0][0]][$swap[0][1]] = $second;
+        $board[$swap[1][0]][$swap[1][1]] = $first;
+    }
+
+    return $board;
+}
+
+function rotate_clockwise($board)
+{
+    $new_board = [];
+    $row_count = 0;
+    for ($y = 0; $y < 5; $y++)
+    {
+        $new_row = [];
+        for ($x = 4; $x >= 0; $x--)
+        {
+            $new_row[] = $board[$x][$y];
+        }
+        $new_board[$row_count] = $new_row;
+        $row_count++;
+    }
+    return $new_board;
+}
+
+function rotate_counterclockwise($board)
+{
+    $new_board = [];
+    $row_count = 0;
+    for ($y = 4; $y >= 0; $y--)
+    {
+        $new_row = [];
+        for ($x = 0; $x < 5; $x++)
+        {
+            $new_row[] = $board[$x][$y];
+        }
+        $new_board[$row_count] = $new_row;
+        $row_count++;
+    }
+    return $new_board;
 }
