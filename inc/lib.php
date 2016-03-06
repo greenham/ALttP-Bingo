@@ -23,11 +23,6 @@ function init_db()
     return $db;
 }
 
-function make_seed()
-{
-    return mt_rand(100000, 999999);
-}
-
 function output_json($data)
 {
     $callback = (isset($_GET['callback']) ? $_GET['callback'] : null);
@@ -44,6 +39,8 @@ function output_json($data)
     return true;
 }
 
+//////////////////////////////////////////////////////////////
+// Board generation
 function generate_board($seed, $mode = 'normal', $size = 5)
 {
     srand($seed);
@@ -126,6 +123,13 @@ function difficulty($cell, $seed)
     return $value;
 }
 
+function make_seed()
+{
+    return mt_rand(100000, 999999);
+}
+
+//////////////////////////////////////////////////////////////
+// Goal "Model"
 function get_goals()
 {
     $db = init_db();
@@ -273,6 +277,28 @@ function delete_goal($id)
     return $result;
 }
 
+//////////////////////////////////////////////////////////////
+// User session stuff
+function init_session()
+{
+    session_start();
+}
+
+function check_user_login($username, $password)
+{
+    if ($username === 'admin' && $password === 'sgqf')
+    {
+        return true;
+    }
+    else
+    {
+        return false;
+    }
+}
+
+
+//////////////////////////////////////////////////////////////
+// Old magic square generation stuff
 /*
 ## PHP Magic Square (2014)
 ## Author:  Siamak Aghaeipour Motlagh

@@ -2,6 +2,13 @@
 
 require_once('inc/lib.php');
 
+init_session();
+
+if (!isset($_SESSION['admin']))
+{
+    header('Location: login.php');
+}
+
 if (isset($_POST['action']))
 {
     $action = $_POST['action'];
