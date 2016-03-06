@@ -101,18 +101,6 @@ footer .container {
 #main {
   padding-bottom: 28px;
 }
-#logo {
-  background: url("http://c15111086.r86.cf2.rackcdn.com/srl_350px.png") no-repeat;
-  display: block;
-  overflow: hidden;
-  width: 350px;
-  height: 50px;
-  margin-bottom: 13px;
-  float: left;
-}
-#logo span {
-  display: none;
-}
 #headerright {
   display: block;
   overflow: hidden;

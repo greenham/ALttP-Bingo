@@ -48,7 +48,7 @@ function get_goals()
 {
     $db = init_db();
 
-    $result = $db->query("SELECT * FROM `bingo_goals`");
+    $result = $db->query("SELECT * FROM `bingo_goals` ORDER BY `difficulty` DESC");
     if (!$result)
     {
         error_log("Invalid query: " . mysql_error());
