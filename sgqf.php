@@ -45,6 +45,19 @@ if (isset($_POST['action']))
             }
             exit;
             break;
+        case 'delete-goal':
+            $id = $_POST['id'];
+            $deleted = delete_goal($id);
+            if ($deleted === true)
+            {
+                output_json(['success' => true]);
+            }
+            else
+            {
+                output_json(['error' => "Unable to delete goal!"]);
+            }
+            exit;
+            break;
     }
 }
 
@@ -98,7 +111,7 @@ $goals = get_goals();
                             <input type="number" name="nearest_flute_location" value="<?= $goal->nearest_flute_location; ?>" min="1" max="8" class="form-control">
                         </td>
                         <td>
-                            <button class="save-goal-btn btn btn-md btn-default">Save</button><!-- <button class="delete-goal-btn btn btn-xs btn-danger pull-right" title="Delete"><i class="glyphicon glyphicon-trash"></i></button> -->
+                            <button class="save-goal-btn btn btn-md btn-default">Save</button><button class="delete-goal-btn btn btn-xs btn-danger pull-right" title="Delete Goal"><i class="glyphicon glyphicon-trash"></i></button>
                         </td>
                     </tr>
                 <? endforeach; ?>
@@ -170,6 +183,34 @@ $(function() {
             $newRow.attr('data-id', data.new_goal.id);
             $newRow.find('#add-goal-btn')*/
 
+        });
+    });
+
+    $('.delete-goal-btn').on('click', function (e) {
+        if (!confirm("Are you SURE you want to remove this goal?")) {
+            return false;
+        }
+
+        var $btn = $(this);
+        var btnText = lock_button($btn);
+
+        var $goalRow = $btn.parents('tr');
+        var goalId = $goalRow.data('id');
+        var deleteData = {action: 'delete-goal', id: goalId};
+
+        $.post('sgqf.php', deleteData, function(data, textStatus, xhr) {
+            unlock_button($btn, btnText);
+
+            if (data.error)
+            {
+                alert(data.error);
+                return false;
+            }
+
+            // remove this row
+            $goalRow.effect("highlight", {color: "#FF4040"}).fadeOut('slow', function (e) {
+                $(this).remove();
+            });
         });
     });
 

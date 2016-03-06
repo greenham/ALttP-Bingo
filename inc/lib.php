@@ -228,6 +228,7 @@ function create_goal($data)
 function update_goal($id, $data)
 {
     $db = init_db();
+    $id = $db->real_escape_string($id);
 
     $sql = "UPDATE `bingo_goals` SET ";
 
@@ -243,6 +244,14 @@ function update_goal($id, $data)
 
     $result = $db->query($sql);
 
+    return $result;
+}
+
+function delete_goal($id)
+{
+    $db = init_db();
+    $id = $db->real_escape_string($id);
+    $result = $db->query("DELETE FROM `bingo_goals` WHERE `id` = '{$id}'");
     return $result;
 }
 
