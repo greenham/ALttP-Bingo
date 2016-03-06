@@ -27,15 +27,12 @@ function bingosetup() {
       // append this seed to the URL, add to history
       history.pushState(bingoOpts, "", "?seed="+bingoOpts.seed)
 
-      for (row = 0; row < 5; row++)
+      for (cell = 1; cell <= 25; cell++)
       {
-        for (col = 0; col < 5; col++)
-        {
-          $square = $('.row'+(row+1)+'.col'+(col+1));
-          $square
-            .html('<strong>'+data.board[row][col].name + '</strong><br>D: ' + data.board[row][col].difficulty)
-            .attr('title', 'Nearest Flute: ' + data.board[row][col].nearest_flute_location);
-        }
+        $square = $('#slot'+cell);
+        $square
+          .html('<strong>'+data.board[cell].name + '</strong><br>D: ' + data.board[cell].difficulty)
+          .attr('title', 'Nearest Flute: ' + data.board[cell].nearest_flute_location);
       }
 
       $("span#debug").html("<p>ALttP Bingo <strong>v" + data.version + "</strong> &emsp;Seed: <strong>" + bingoOpts.seed + "</strong>&emsp;Card type: <strong>" + cardType + "</strong></p>");

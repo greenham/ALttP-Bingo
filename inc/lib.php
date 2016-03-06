@@ -2,7 +2,7 @@
 
 require_once('inc/db.php');
 
-const BINGO_VERSION = "2.1";
+const BINGO_VERSION = "2.2";
 
 function init_db()
 {
@@ -115,69 +115,82 @@ function generate_board($seed, $mode = 'normal', $size = 5)
 {
     srand($seed);
 
-    $board = [[]];
+    $board = [];
 
     $goals = get_goals_by_difficulty();
 
-    // generate a magic square of difficulty ratings
-    $magic_square = magic_square($size);
-
-    for ($x = 0; $x < $size; $x++)
+    for ($i = 1; $i <= 25; $i++)
     {
-        for ($y = 0; $y < $size; $y++)
-        {
-            $difficulty = $magic_square[$x][$y];
+        $difficulty = difficulty($i, $seed);
+        $group_goals = $goals[$difficulty];
+        shuffle($group_goals);
 
-            // get a random goal with this difficulty
-            $goal = $goals[$difficulty][array_rand($goals[$difficulty])];
+        // get a random goal with this difficulty
+        $goal = $group_goals[array_rand($group_goals)];
 
-            // add it to the board
-            $board[$x][$y] = $goal;
+        // add it to the final board
+        $board[$i] = $goal;
 
-            // remove it from the pool
-            unset($goals[$difficulty][$goal->id]);
-        }
-    }
-
-
-    // do some random matrix transformations to increase... randomness
-    $rotate = rand(0, 2);
-    switch ($rotate)
-    {
-        case 0:
-            $rotate_function = false;
-            break;
-        case 1:
-            $rotate_function = 'clockwise';
-            break;
-        case 2:
-            $rotate_function = 'counterclockwise';
-            break;
-    }
-
-    if ($rotate_function !== false)
-    {
-        $rotate_function = "rotate_{$rotate_function}";
-
-        // rotate 1-3 times
-        for ($i = 1; $i <= rand(1,3); $i++)
-        {
-            $board = $rotate_function($board);
-        }
-    }
-
-    $reflect = rand(0, 2);
-    switch($reflect)
-    {
-        case 1:
-            $board = reflect_diaganol_tlbr($board);
-            break;
-        case 2:
-            $board = reflect_diaganol_trbl($board);
-            break;
+        // remove it from the pool
+        unset($goals[$difficulty][$goal->id]);
     }
 
     return $board;
+}
+
+function difficulty($cell, $seed)
+{
+    // To create the magic square we need 2 random orderings of the numbers 0, 1, 2, 3, 4.
+    // The following creates those orderings and calls them Table5 and Table1
+
+    $Num3 = $seed%1000;   // Table5 will use the ones, tens, and hundreds digits.
+
+    $Rem8 = $Num3%8;
+    $Rem4 = floor($Rem8/2);
+    $Rem2 = $Rem8%2;
+    $Rem5 = $Num3%5;
+    $Rem3 = $Num3%3;  // Note that Rem2, Rem3, Rem4, and Rem5 are mathematically independent.
+    $RemT = floor($Num3/120);    // This is between 0 and 8
+
+    // The idea is to begin with an array containing a single number, 0.
+    // Each number 1 through 4 is added in a random spot in the array's current size.
+    // The result - the numbers 0 to 4 are in the array in a random (and uniform) order.
+    $Table5 = [0];
+    array_splice($Table5, $Rem2, 0, 1);
+    array_splice($Table5, $Rem3, 0, 2);
+    array_splice($Table5, $Rem4, 0, 3);
+    array_splice($Table5, $Rem5, 0, 4);
+
+    $Num3 = floor($seed/1000);   // Table1 will use the next 3 digits.
+    $Num3 = $Num3%1000;
+
+    $Rem8 = $Num3%8;
+    $Rem4 = floor($Rem8/2);
+    $Rem2 = $Rem8%2;
+    $Rem5 = $Num3%5;
+    $Rem3 = $Num3%3;
+    $RemT = $RemT * 8 + floor($Num3/120);  // This is between 0 and 64.
+
+    $Table1 = [0];
+    array_splice($Table1, $Rem2, 0, 1);
+    array_splice($Table1, $Rem3, 0, 2);
+    array_splice($Table1, $Rem4, 0, 3);
+    array_splice($Table1, $Rem5, 0, 4);
+
+    $cell--;
+    $RemT = $RemT%5;      //  Between 0 and 4, fairly uniformly.
+    $x = ($cell+$RemT)%5;     //  RemT is horizontal shift to put any diagonal on the main diagonal.
+    $y = floor($cell/5);
+
+    // The Tables are set into a single magic square template
+    // Some are the same up to some rotation, reflection, or row permutation.
+    // However, all genuinely different magic squares can arise in this fashion.
+    $e5 = $Table5[($x + 3*$y)%5];
+    $e1 = $Table1[(3*$x + $y)%5];
+
+    // Table5 controls the 5* part and Table1 controls the 1* part.
+    $value = 5*$e5 + $e1 + 1;
+    return $value;
 }
 
 /*
@@ -186,16 +199,18 @@ function generate_board($seed, $mode = 'normal', $size = 5)
 ## Email:   siamak.aghaeipour@gmail.com
 ## Website: http://blacksrc.com
 */
-function magic_square($size = 5, $randomize = true)
+function magic_square($size = 5)
 {
     if ($size %2 != 0)
     {
         $first = ($size - 1) / 2;
         $min = 2;
         $max = $size * $size;
+
         $row = 0;
         $col = $first;
-        $mt[$row][$col] = 1;
+
+        $mt[$row][$col] =    1;
         for ($i = $min; $i <= $max; $i++)
         {
             // save the current point
