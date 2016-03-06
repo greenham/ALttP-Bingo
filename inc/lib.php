@@ -137,7 +137,7 @@ function get_goals()
     $result = $db->query("SELECT * FROM `bingo_goals` ORDER BY `difficulty` DESC");
     if (!$result)
     {
-        error_log("Invalid query: " . mysql_error());
+        error_log("Invalid query: " . $db->error);
         return false;
     }
 
@@ -190,7 +190,7 @@ function get_goal_stats()
     $result = $db->query($stats_sql);
     if (!$result)
     {
-        error_log("Invalid query: " . mysql_error());
+        error_log("Invalid query: " . $db->error);
         return $stats;
     }
 
@@ -284,18 +284,50 @@ function init_session()
     session_start();
 }
 
-function check_user_login($username, $password)
+function create_token()
 {
-    if ($username === 'admin' && $password === 'sgqf')
-    {
-        return true;
-    }
-    else
-    {
-        return false;
-    }
+    $salt = substr(str_shuffle("ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234567890123456789"), 0, 14);
+
+    return $salt;
 }
 
+function create_salt()
+{
+    $salt = substr(str_shuffle("AB#CDEFGHI%JKLMNO@PQRSTUVWXYZab&cdefghijklmn!opqrstuvwxyz0123456789"), 0, 32);
+
+    return $salt;
+}
+
+function salt_password($password)
+{
+    $salt = create_salt();
+
+    $salted = crypt($salt."".$password, "$6$".$salt);
+
+    $password = array('salt' => $salt, 'salted' => $salted);
+
+    return $password;
+}
+
+function return_pass_check($password, $salt)
+{
+    return crypt($salt."".$password, "$6$".$salt);
+}
+
+function check_user_login($username, $password)
+{
+    $db = init_db();
+    $username = $db->real_escape_string($username);
+
+    $result = $db->query("SELECT * FROM `bingo_users` WHERE `username` = '{$username}'");
+
+    if ($result->num_rows === 0) {
+        throw new Exception("No such user");
+    }
+
+    $user = $result->fetch_object();
+    return return_pass_check($password, $user->salt);
+}
 
 //////////////////////////////////////////////////////////////
 // Old magic square generation stuff
