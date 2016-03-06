@@ -38,13 +38,14 @@ $goals = get_goals();
     <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
     <link rel="icon" type="image/ico" href="/favicon.ico">
     <script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
+    <script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
     <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
 </head>
 <body>
     <div class="container">
-        <table class="table table-striped">
+        <table class="table table-striped table-condensed">
             <thead>
                 <tr>
                     <th>Goal</th>
@@ -55,10 +56,10 @@ $goals = get_goals();
             </thead>
             <tbody>
                 <tr>
-                    <td><input type="text" name="name" value="" size="30"></td>
+                    <td><input type="text" name="name" value="" size="30" placeholder="New Goal Name"></td>
                     <td><input type="number" name="difficulty" value="" min="1" max="25"></td>
                     <td><input type="number" name="nearest_flute_location" value="" min="1" max="8"></td>
-                    <td><button class="add-goal-btn btn btn-primary">Add</button></td>
+                    <td><button class="add-goal-btn btn btn-md btn-primary">Add</button></td>
                 </tr>
                 <? foreach($goals as $goal): ?>
                     <tr data-id="<?= $goal->id; ?>">
@@ -72,7 +73,7 @@ $goals = get_goals();
                             <input type="number" name="nearest_flute_location" value="<?= $goal->nearest_flute_location; ?>" min="1" max="8">
                         </td>
                         <td>
-                            <button class="save-goal-btn btn btn-default">Save</button>
+                            <button class="save-goal-btn btn btn-md btn-default">Save</button> <button class="delete-goal-btn btn btn-xs btn-danger pull-right" title="Delete"><i class="glyphicon glyphicon-trash"></i></button>
                         </td>
                     </tr>
                 <? endforeach; ?>
@@ -84,7 +85,10 @@ $goals = get_goals();
 <script>
 $(function() {
     $('.save-goal-btn').on('click', function (e) {
-        var $goalRow = $(this).parents('tr');
+        var $btn = $(this);
+        var btnText = lock_button($btn);
+
+        var $goalRow = $btn.parents('tr');
         var goalId = $goalRow.data('id');
         var updateData = {action: 'update-goal', id: goalId};
 
@@ -95,16 +99,32 @@ $(function() {
         });
 
         $.post('sgqf.php', updateData, function(data, textStatus, xhr) {
+            unlock_button($btn, btnText);
+
             if (data.error)
             {
+                // highlight/flash row
+                $goalRow.effect("highlight", {color: "#FF4040"});
                 alert(data.error);
                 return false;
             }
 
             // highlight/flash row
-            alert('Updated!');
+            $goalRow.effect("highlight", {color: "#93DB70"});
         });
     });
+
+    function lock_button($btn)
+    {
+        var originalText = $btn.html();
+        $btn.html('...').attr('disabled', 'disabled');
+        return originalText;
+    }
+
+    function unlock_button($btn, originalText)
+    {
+        $btn.html(originalText).removeAttr('disabled');
+    }
 });
 </script>
 
