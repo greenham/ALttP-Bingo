@@ -151,9 +151,11 @@ if (isset($_POST['action']))
 $(function() {
     $('.form-signin').on('submit', function (e) {
         e.preventDefault();
-        $(this).find('button[type="submit"]').attr('disabled', 'disabled');
+        $form = $(this);
+        $btn = $form.find('button[type="submit"]');
+        $btn.attr('disabled', 'disabled');
         $.post('login.php', $(this).serialize(), function(data, textStatus, xhr) {
-            $(this).find('button[type="submit"]').removeAttr('disabled');
+            $btn.removeAttr('disabled');
             if (data.success)
             {
                 window.location.href = 'sgqf.php';

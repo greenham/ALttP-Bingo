@@ -326,7 +326,9 @@ function check_user_login($username, $password)
     }
 
     $user = $result->fetch_object();
-    return return_pass_check($password, $user->salt);
+    $pass_check = return_pass_check($password, $user->salt);
+
+    return ($user->password == $pass_check);
 }
 
 //////////////////////////////////////////////////////////////

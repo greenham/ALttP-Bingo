@@ -197,7 +197,6 @@ $(function() {
             }
 
             // just reload the page for now
-            alert('Goal added! Page will refresh now.');
             location.reload();
 
             // @todo add new row after the input row, then clear the input row
