@@ -24,6 +24,27 @@ if (isset($_POST['action']))
             }
             exit;
             break;
+        case 'create-goal':
+            try
+            {
+                $new_goal = create_goal($_POST);
+            }
+            catch (Exception $e)
+            {
+                $new_goal === false;
+                $error = $e->getMessage();
+            }
+
+            if ($new_goal !== false)
+            {
+                output_json(['success' => true, 'goal' => $new_goal]);
+            }
+            else
+            {
+                output_json(['error' => (isset($error) ? $error : "Unable to create new goal!")]);
+            }
+            exit;
+            break;
     }
 }
 
@@ -39,13 +60,17 @@ $goals = get_goals();
     <link rel="icon" type="image/ico" href="/favicon.ico">
     <script src="//code.jquery.com/jquery-1.12.0.min.js"></script>
     <script src="//code.jquery.com/ui/1.11.4/jquery-ui.min.js"></script>
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
-    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous">
+    <link rel="stylesheet" href="//bootswatch.com/darkly/bootstrap.min.css">
+    <!-- <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css" integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7" crossorigin="anonymous">
+    <link rel="stylesheet" href="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap-theme.min.css" integrity="sha384-fLW2N01lMqjakBkx3l/M9EahuwpSfeNvV63J5ezn3uZzapT0u7EYsXMjQV+0En5r" crossorigin="anonymous"> -->
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
+    <style>
+        body { background: url('/assets/images/debut_dark.png'); }
+    </style>
 </head>
 <body>
     <div class="container">
-        <table class="table table-striped table-condensed">
+        <table class="table table-condensed">
             <thead>
                 <tr>
                     <th>Goal</th>
@@ -56,24 +81,24 @@ $goals = get_goals();
             </thead>
             <tbody>
                 <tr>
-                    <td><input type="text" name="name" value="" size="30" placeholder="New Goal Name"></td>
-                    <td><input type="number" name="difficulty" value="" min="1" max="25"></td>
-                    <td><input type="number" name="nearest_flute_location" value="" min="1" max="8"></td>
-                    <td><button class="add-goal-btn btn btn-md btn-primary">Add</button></td>
+                    <td><input type="text" name="name" value="" size="30" placeholder="New Goal Name" class="form-control"></td>
+                    <td><input type="number" name="difficulty" value="" min="1" max="25" class="form-control"></td>
+                    <td><input type="number" name="nearest_flute_location" value="" min="1" max="8" class="form-control"></td>
+                    <td><button id="add-goal-btn" class="btn btn-md btn-primary">Add Goal</button></td>
                 </tr>
                 <? foreach($goals as $goal): ?>
                     <tr data-id="<?= $goal->id; ?>">
                         <td>
-                            <input type="text" name="name" value="<?= $goal->name; ?>" size="30">
+                            <input type="text" name="name" value="<?= $goal->name; ?>" size="30" class="form-control">
                         </td>
                         <td>
-                            <input type="number" name="difficulty" value="<?= $goal->difficulty; ?>" min="1" max="25">
+                            <input type="number" name="difficulty" value="<?= $goal->difficulty; ?>" min="1" max="25" class="form-control">
                         </td>
                         <td>
-                            <input type="number" name="nearest_flute_location" value="<?= $goal->nearest_flute_location; ?>" min="1" max="8">
+                            <input type="number" name="nearest_flute_location" value="<?= $goal->nearest_flute_location; ?>" min="1" max="8" class="form-control">
                         </td>
                         <td>
-                            <button class="save-goal-btn btn btn-md btn-default">Save</button> <button class="delete-goal-btn btn btn-xs btn-danger pull-right" title="Delete"><i class="glyphicon glyphicon-trash"></i></button>
+                            <button class="save-goal-btn btn btn-md btn-default">Save</button><!-- <button class="delete-goal-btn btn btn-xs btn-danger pull-right" title="Delete"><i class="glyphicon glyphicon-trash"></i></button> -->
                         </td>
                     </tr>
                 <? endforeach; ?>
@@ -111,6 +136,40 @@ $(function() {
 
             // highlight/flash row
             $goalRow.effect("highlight", {color: "#93DB70"});
+        });
+    });
+
+    $('#add-goal-btn').on('click', function (e) {
+        var $btn = $(this);
+        var btnText = lock_button($btn);
+
+        var $goalRow = $btn.parents('tr');
+        var createData = {action: 'create-goal'};
+
+        $.each($goalRow.children('td'), function(index, cell)
+        {
+            var $input = $(cell).find('input');
+            createData[$input.attr('name')] = $input.val();
+        });
+
+        $.post('sgqf.php', createData, function(data, textStatus, xhr) {
+            unlock_button($btn, btnText);
+
+            if (data.error)
+            {
+                alert(data.error);
+                return false;
+            }
+
+            // just reload the page for now
+            alert('Goal added! Page will refresh now.');
+            window.reload();
+
+            // @todo add new row after the input row, then clear the input row
+            /*$newRow = $goalRow.clone();
+            $newRow.attr('data-id', data.new_goal.id);
+            $newRow.find('#add-goal-btn')*/
+
         });
     });
 

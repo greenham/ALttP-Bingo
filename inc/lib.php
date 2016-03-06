@@ -193,9 +193,36 @@ function get_goal_stats()
     return $result->fetch_assoc();
 }
 
-function create_goal()
+function create_goal($data)
 {
+    $db = init_db();
 
+    $required_fields = ['name', 'difficulty', 'nearest_flute_location'];
+    foreach($required_fields as $field)
+    {
+        if (!isset($data[$field]))
+        {
+            throw new Exception("Missing '{$field}'");
+        }
+
+        $data[$field] = $db->real_escape_string($data[$field]);
+    }
+
+    $sql = "INSERT INTO `bingo_goals`";
+    $sql .= ' (`' . implode('`, `', array_keys($data)) . '`)';
+    $sql .= ' VALUES ';
+    $sql .= " ('" . implode("', '", array_values($data)) . "')";
+
+    $result = $db->query($sql);
+
+    if ($result === false)
+    {
+        return false;
+    }
+
+    $new_goal = json_decode(json_encode($data));
+    $new_goal->id = $db->insert_id();
+    return $new_goal;
 }
 
 function update_goal($id, $data)
