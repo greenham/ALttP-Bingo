@@ -139,20 +139,41 @@ function generate_board($seed, $mode = 'normal', $size = 5)
         }
     }
 
-    $transform = rand(0,4);
-    switch ($transform)
+
+    // do some random matrix transformations to increase... randomness
+    $rotate = rand(0, 2);
+    switch ($rotate)
+    {
+        case 0:
+            $rotate_function = false;
+            break;
+        case 1:
+            $rotate_function = 'clockwise';
+            break;
+        case 2:
+            $rotate_function = 'counterclockwise';
+            break;
+    }
+
+    if ($rotate_function !== false)
+    {
+        $rotate_function = "rotate_{$rotate_function}";
+
+        // rotate 1-3 times
+        for ($i = 1; $i <= rand(1,3); $i++)
+        {
+            $board = $rotate_function($board);
+        }
+    }
+
+    $reflect = rand(0, 2);
+    switch($reflect)
     {
         case 1:
             $board = reflect_diaganol_tlbr($board);
             break;
         case 2:
             $board = reflect_diaganol_trbl($board);
-            break;
-        case 3:
-            $board = rotate_clockwise($board);
-            break;
-        case 4:
-            $board = rotate_counterclockwise($board);
             break;
     }
 
