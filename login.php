@@ -48,7 +48,7 @@ if (isset($_POST['action']))
     <script src="//maxcdn.bootstrapcdn.com/bootstrap/3.3.6/js/bootstrap.min.js" integrity="sha384-0mSbJDEHialfmuBBQP6A4Qrprq5OVfW37PRR3j5ELqxss1yVqOtnepnHVP9aJ7xS" crossorigin="anonymous"></script>
     <style>
         body {
-          background: url('/assets/images/debut_dark.png');
+          background: url('assets/images/debut_dark.png');
         }
 
         .form-signin
@@ -134,7 +134,7 @@ if (isset($_POST['action']))
             <div class="col-sm-6 col-md-4 col-md-offset-4">
                 <h1 class="text-center login-title">ALttP Bingo Admin</h1>
                 <div class="account-wall">
-                    <img class="profile-img" src="/assets/images/sausage-link.jpg" alt="">
+                    <img class="profile-img" src="assets/images/sausage-link.jpg" alt="">
                     <form class="form-signin">
                         <input name="username" type="text" class="form-control" placeholder="Username" required autofocus>
                         <input name="password" type="password" class="form-control" placeholder="Password" required>
