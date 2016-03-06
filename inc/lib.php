@@ -190,7 +190,25 @@ function get_goal_stats()
         return $stats;
     }
 
-    return $result->fetch_assoc();
+    foreach($result->fetch_assoc() as $key => $value)
+    {
+        if (strpos($key, '_difficulty_count') !== false)
+        {
+            $difficulty = str_replace('_difficulty_count', '', $key);
+            $stats['difficulties'][$difficulty] = $value;
+        }
+        else if (strpos($key, '_flute_location_count') !== false)
+        {
+            $location = str_replace('_flute_location_count', '', $key);
+            $stats['flute_locations'][$location] = $value;
+        }
+        else
+        {
+            $stats[$key] = $value;
+        }
+    }
+
+    return $stats;
 }
 
 function create_goal($data)

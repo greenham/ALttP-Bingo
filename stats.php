@@ -10,10 +10,10 @@ if (!empty($stats))
     {
         if (strpos($name, '_difficulty_count') !== false) {
             $difficulty = str_replace('_difficulty_count', '', $name);
-            echo "d{$difficulty}: <strong>{$value}</strong><br>";
+            echo "difficulty {$difficulty}: <strong>{$value}</strong><br>";
         } else if (strpos($name, '_flute_location_count') !== false) {
             $location = str_replace('_flute_location_count', '', $name);
-            echo "f{$location}: <strong>{$value}</strong><br>";
+            echo "flute {$location}: <strong>{$value}</strong><br>";
         } else {
             $name = ucfirst(str_replace('_', ' ', $name));
             echo "{$name}: <strong>{$value}</strong><br>";

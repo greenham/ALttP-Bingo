@@ -82,36 +82,51 @@ $goals = get_goals();
     </style>
 </head>
 <body>
-    <div class="container">
-        <table class="table table-condensed">
+    <div class="container well">
+        <div id="stats" class="pull-right text-right">
+            <?php
+                $stats = get_goal_stats();
+
+                if (!empty($stats))
+                {
+                    ?>Total Goals: <strong><?= $stats['total_goals']; ?></strong><?
+                }
+            ?>
+        </div>
+
+        <h2>A Link to the Past Bingo Goals</h2>
+
+        <p class="clearfix"><br></p>
+
+        <table class="table table-striped">
             <thead>
                 <tr>
                     <th>Goal</th>
                     <th>Difficulty</th>
-                    <th>Flute</th>
+                    <th>Nearest Flute</th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
                 <tr>
-                    <td><input type="text" name="name" value="" size="30" placeholder="New Goal Name" class="form-control"></td>
-                    <td><input type="number" name="difficulty" value="" min="1" max="25" class="form-control"></td>
-                    <td><input type="number" name="nearest_flute_location" value="" min="1" max="8" class="form-control"></td>
-                    <td><button id="add-goal-btn" class="btn btn-md btn-primary">Add Goal</button></td>
+                    <td><input type="text" name="name" value="" size="20" placeholder="New Goal Name" class="form-control input-sm"></td>
+                    <td><input type="number" name="difficulty" value="" min="1" max="25" class="form-control input-sm"></td>
+                    <td><input type="number" name="nearest_flute_location" value="" min="1" max="8" class="form-control input-sm"></td>
+                    <td><button id="add-goal-btn" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-plus"></i> Add Goal</button></td>
                 </tr>
                 <? foreach($goals as $goal): ?>
                     <tr data-id="<?= $goal->id; ?>">
                         <td>
-                            <input type="text" name="name" value="<?= $goal->name; ?>" size="30" class="form-control">
+                            <input type="text" name="name" value="<?= $goal->name; ?>" size="20" class="form-control input-sm">
                         </td>
                         <td>
-                            <input type="number" name="difficulty" value="<?= $goal->difficulty; ?>" min="1" max="25" class="form-control">
+                            <input type="number" name="difficulty" value="<?= $goal->difficulty; ?>" min="1" max="25" class="form-control input-sm">
                         </td>
                         <td>
-                            <input type="number" name="nearest_flute_location" value="<?= $goal->nearest_flute_location; ?>" min="1" max="8" class="form-control">
+                            <input type="number" name="nearest_flute_location" value="<?= $goal->nearest_flute_location; ?>" min="1" max="8" class="form-control input-sm">
                         </td>
                         <td>
-                            <button class="save-goal-btn btn btn-md btn-default">Save</button><button class="delete-goal-btn btn btn-xs btn-danger pull-right" title="Delete Goal"><i class="glyphicon glyphicon-trash"></i></button>
+                            <button class="save-goal-btn btn btn-sm btn-default">Save</button><button class="delete-goal-btn btn btn-xs btn-danger pull-right" title="Delete Goal"><i class="glyphicon glyphicon-trash"></i></button>
                         </td>
                     </tr>
                 <? endforeach; ?>
