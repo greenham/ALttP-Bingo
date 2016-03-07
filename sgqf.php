@@ -65,6 +65,18 @@ if (isset($_POST['action']))
             }
             exit;
             break;
+        case 'logout':
+            $destroyed = session_destroy();
+            if ($destroyed === true)
+            {
+                output_json(['success' => true]);
+            }
+            else
+            {
+                output_json(['error' => "Unable to log out. YOU'RE MINE"]);
+            }
+            exit;
+            break;
     }
 }
 
@@ -90,18 +102,30 @@ $goals = get_goals();
 </head>
 <body>
     <div class="container well">
+        <a href="#" class="pull-right btn btn-sm logout-link">Logout</a>
+        <h2>A Link to the Past Bingo Goals</h2>
+
         <div id="stats" class="pull-right text-right">
             <?php
                 $stats = get_goal_stats();
 
                 if (!empty($stats))
                 {
-                    ?>Total Goals: <strong><?= $stats['total_goals']; ?></strong><?
+                    ?>
+                    <p>Total Goals: <strong><?= $stats['total_goals']; ?></strong></p>
+                    <small><a href="#" id="toggle-more-stats-link">Toggle stats</a></small>
+                    <div id="more-stats" class="row">
+                        <div class="col-md-6">
+                            <div id="difficulty-distribution"></div>
+                        </div>
+                        <div class="col-md-6">
+                            <div id="flute-location-distribution"></div>
+                        </div>
+                    </div>
+                    <?
                 }
             ?>
         </div>
-
-        <h2>A Link to the Past Bingo Goals</h2>
 
         <p class="clearfix"><br></p>
 
@@ -142,6 +166,7 @@ $goals = get_goals();
     </div>
 </body>
 
+<script type="text/javascript" src="//www.gstatic.com/charts/loader.js"></script>
 <script>
 $(function() {
     $('.save-goal-btn').on('click', function (e) {
@@ -234,6 +259,77 @@ $(function() {
             });
         });
     });
+
+    $('.logout-link').on('click', function (e) {
+        $.post('sgqf.php', {action: 'logout'}, function(data, textStatus, xhr) {
+            if (data.success) {
+                window.location.href = 'login.php';
+            } else if (data.error) {
+                alert(data.error);
+            }
+        });
+    });
+
+    $('#toggle-more-stats-link').on('click', function (e) {
+        $('#more-stats').toggle();
+    });
+
+    <? if (!empty($stats)): ?>
+
+    make_charts();
+    $('#more-stats').hide();
+
+    function make_charts()
+    {
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawCharts);
+        function drawCharts()
+        {
+            <? if (!empty($stats['difficulties'])): ?>
+            var data = new google.visualization.DataTable();
+            data.addColumn('string', 'Difficulty');
+            data.addColumn('number', 'Frequency');
+
+            data.addRows([
+                <? foreach($stats['difficulties'] as $difficulty => $count): ?>
+                    ['<?= $difficulty; ?>', <?= $count; ?>],
+                <? endforeach; ?>
+                ['', 0]
+            ]);
+
+            var options = {
+                title: 'Difficulty Distribution',
+                hAxis: {
+                  title: 'Difficulty'
+                },
+                vAxis: {
+                  title: 'Frequency'
+                },
+                width: 500,
+                height: 250
+            };
+
+            var chart = new google.visualization.ColumnChart(document.getElementById('difficulty-distribution'));
+
+            chart.draw(data, options);
+            <? endif; ?>
+
+            <? if (!empty($stats['flute_locations'])): ?>
+            var data = google.visualization.arrayToDataTable([
+              ['Difficulty', 'Count']<? foreach($stats['flute_locations'] as $location => $count): ?>, ['<?= $location; ?>', <?= $count; ?>]<? endforeach; ?>
+            ]);
+            var options = {
+              title: 'Location Distribution',
+              width: 500,
+              height: 250
+            };
+            var chart = new google.visualization.PieChart(document.getElementById('flute-location-distribution'));
+            chart.draw(data, options);
+            <? endif; ?>
+        }
+    }
+
+    <? endif; ?>
 
     function lock_button($btn)
     {
