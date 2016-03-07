@@ -81,6 +81,7 @@ if (isset($_POST['action']))
 }
 
 $goals = get_goals();
+$stats = get_goal_stats();
 
 ?>
 
@@ -102,19 +103,20 @@ $goals = get_goals();
 </head>
 <body>
     <div class="container well">
-        <a href="#" class="pull-right btn btn-sm logout-link">Logout</a>
-        <h2>A Link to the Past Bingo Goals</h2>
+        <span class="pull-right" id="top-nav-links">
+            <a href="#" class="btn btn-sm btn-default" id="toggle-more-stats-link"><i class="glyphicon glyphicon-tasks"></i> Toggle Stats</a> <a href="#" class="btn btn-sm btn-default logout-link"><i class="glyphicon glyphicon-log-out"></i> Logout</a>
+        </span>
 
-        <div id="stats" class="pull-right text-right">
+        <h2>A Link to the Past Bingo Goals<?= isset($stats['total_goals']) ? " <small>Current Total: {$stats['total_goals']}</small>":''; ?></h2>
+
+        <p class="clearfix"><br></p>
+
+        <div id="stats" class="text-right">
             <?php
-                $stats = get_goal_stats();
-
                 if (!empty($stats))
                 {
                     ?>
-                    <p>Total Goals: <strong><?= $stats['total_goals']; ?></strong></p>
-                    <small><a href="#" id="toggle-more-stats-link">Toggle stats</a></small>
-                    <div id="more-stats" class="row">
+                    <div id="more-stats" class="row text-center" style="display: none;">
                         <div class="col-md-6">
                             <div id="difficulty-distribution"></div>
                         </div>
@@ -157,7 +159,7 @@ $goals = get_goals();
                             <input type="number" name="nearest_flute_location" value="<?= $goal->nearest_flute_location; ?>" min="1" max="8" class="form-control input-sm">
                         </td>
                         <td>
-                            <button class="save-goal-btn btn btn-sm btn-default">Save</button><button class="delete-goal-btn btn btn-xs btn-danger pull-right" title="Delete Goal"><i class="glyphicon glyphicon-trash"></i></button>
+                            <button class="save-goal-btn btn btn-sm btn-default"><i class="glyphicon glyphicon-floppy-disk"></i> Save</button><button class="delete-goal-btn btn btn-xs btn-danger pull-right" title="Delete Goal"><i class="glyphicon glyphicon-trash"></i></button>
                         </td>
                     </tr>
                 <? endforeach; ?>
@@ -261,6 +263,9 @@ $(function() {
     });
 
     $('.logout-link').on('click', function (e) {
+        if (!confirm("Are you sure you want to log out?")) {
+            return false;
+        }
         $.post('sgqf.php', {action: 'logout'}, function(data, textStatus, xhr) {
             if (data.success) {
                 window.location.href = 'login.php';
@@ -277,7 +282,6 @@ $(function() {
     <? if (!empty($stats)): ?>
 
     make_charts();
-    $('#more-stats').hide();
 
     function make_charts()
     {
