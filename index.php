@@ -1,3 +1,13 @@
+<?php
+
+require_once('inc/lib.php');
+require_once('inc/Parsedown.php');
+
+$rules_markdown = get_setting('rules_markdown');
+$Parsedown = new Parsedown();
+
+?>
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -86,17 +96,13 @@
                         <p>This is a "Bingo" board for A Link to the Past races.</p>
                         <p>To win, you must complete 5 of the tasks in a row horizontally, vertically, or diagonally.</p>
                         <p>The seed number is used to generate the board. Changing the seed will make a new board.</p>
-                        <p>You can click on the squares to turn them green and red. This may help you organize your route planning.</p>
+                        <p>You can click on the squares to turn them green or red. This may help you organize your route planning.</p>
 
                         <p><br></p>
 
                         <h2>Rules</h2>
-                        <ul>
-                            <li>All Glitches are allowed.</li>
-                            <li>Use of Japanese v1.0 is recommended, but all official versions are allowed. SRL emulator rules apply.</li>
-                            <li>You must load a dungeon properly to collect its Pendant, Crystal, Big Key, Map, or Compass.</li>
-                            <li>Swordless Goals only prohibit the possession of a sword in the dungeon, loaded or unloaded, pertaining to the Goal.</li>
-                        </ul>
+                        <?= $Parsedown->text($rules_markdown); ?>
+
                         <p><button id="new-board-btn">Make New Board</button></p>
                     </div>
                 </div>

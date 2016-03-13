@@ -2,13 +2,5 @@
 
 require_once('inc/lib.php');
 
-$seed = make_seed();
-
-try
-{
-    $board = generate_board($seed);
-}
-catch (Exception $e)
-{
-    var_dump($e->getMessage());
-}
+$setting = get_setting('rules_markdown');
+var_dump($setting);

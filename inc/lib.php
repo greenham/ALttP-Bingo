@@ -396,6 +396,24 @@ function delete_goal($id)
 }
 
 //////////////////////////////////////////////////////////////
+// Site settings
+function get_setting($setting)
+{
+    $db = init_db();
+    $setting = $db->real_escape_string($setting);
+    $result = $db->query("SELECT `value` FROM `bingo_settings` WHERE `setting` = '{$setting}'");
+    if (!$result)
+    {
+        error_log("Invalid query: " . $db->error);
+        return false;
+    }
+
+    $value = $result->fetch_assoc()['value'];
+
+    return $value;
+}
+
+//////////////////////////////////////////////////////////////
 // User session stuff
 function init_session()
 {
