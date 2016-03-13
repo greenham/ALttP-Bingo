@@ -33,7 +33,7 @@ function bingosetup() {
       {
         $square = $('#slot'+cell);
         $square
-          .html('<strong>'+data.board[cell].name + '</strong><br>G: ' + data.board[cell].exclusion_group)
+          .html('<strong>'+data.board[cell].name + '</strong>')//<br>D: ' + data.board[cell].difficulty + ' | G: ' + data.board[cell].exclusion_group)
           .attr('title', 'Group: ' + data.board[cell].exclusion_group);
       }
 

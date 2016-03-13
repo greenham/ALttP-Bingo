@@ -51,32 +51,101 @@ function generate_board($seed, $mode = 'normal', $size = 5)
     $original_goals = $goals;
     $board_is_valid = false;
 
-    while($board_is_valid === false)
+    // EG map lulz
+    $eg_map = [
+        1=>1,2=>2,3=>3,4=>4,5=>5,
+        6=>3,7=>4,8=>5,9=>1,10=>2,
+        11=>5,12=>1,13=>2,14=>3,15=>4,
+        16=>2,17=>3,18=>4,19=>5,20=>1,
+        21=>4,22=>5,23=>1,24=>2,25=>3,
+    ];
+
+    // @todo random rotations/reflections for the EG map
+
+    $goals = $original_goals;
+
+    for ($i = 1; $i <= 25; $i++)
     {
-        $goals = $original_goals;
+        $difficulty = difficulty($i, $seed);
+        $group_goals = $goals[$difficulty];
+        shuffle($group_goals);
 
-        for ($i = 1; $i <= 25; $i++)
+        // get a random goal with this difficulty AND exclusion group
+        foreach($group_goals as $gg)
         {
-            $difficulty = difficulty($i, $seed);
-            $group_goals = $goals[$difficulty];
-            shuffle($group_goals);
-
-            // get a random goal with this difficulty
-            $goal = $group_goals[array_rand($group_goals)];
-
-            // add it to the final board
-            $board[$i] = $goal;
-
-            // remove it from the pool
-            unset($goals[$difficulty][$goal->id]);
+            if ($gg->exclusion_group == $eg_map[$i])
+            {
+                $goal = $gg;
+                break;
+            }
         }
 
-        $board_is_valid = validate_board($board);
+        // add it to the final board
+        $board[$i] = $goal;
+
+        // remove it from the pool
+        unset($goals[$difficulty][$goal->id]);
     }
 
     return $board;
 }
 
+// This creates a 5x5 magic square using 1-25
+// To create the magic square we need 2 random orderings of the numbers 0, 1, 2, 3, 4.
+// The following creates those orderings and calls them Table5 and Table1
+function difficulty($cell, $seed)
+{
+    $Num3 = $seed%1000;   // Table5 will use the ones, tens, and hundreds digits.
+
+    $Rem8 = $Num3%8;
+    $Rem4 = floor($Rem8/2);
+    $Rem2 = $Rem8%2;
+    $Rem5 = $Num3%5;
+    $Rem3 = $Num3%3;  // Note that Rem2, Rem3, Rem4, and Rem5 are mathematically independent.
+    $RemT = floor($Num3/120);    // This is between 0 and 8
+
+    // The idea is to begin with an array containing a single number, 0.
+    // Each number 1 through 4 is added in a random spot in the array's current size.
+    // The result - the numbers 0 to 4 are in the array in a random (and uniform) order.
+    $Table5 = [0];
+    array_splice($Table5, $Rem2, 0, 1);
+    array_splice($Table5, $Rem3, 0, 2);
+    array_splice($Table5, $Rem4, 0, 3);
+    array_splice($Table5, $Rem5, 0, 4);
+
+    $Num3 = floor($seed/1000);   // Table1 will use the next 3 digits.
+    $Num3 = $Num3%1000;
+
+    $Rem8 = $Num3%8;
+    $Rem4 = floor($Rem8/2);
+    $Rem2 = $Rem8%2;
+    $Rem5 = $Num3%5;
+    $Rem3 = $Num3%3;
+    $RemT = $RemT * 8 + floor($Num3/120);  // This is between 0 and 64.
+
+    $Table1 = [0];
+    array_splice($Table1, $Rem2, 0, 1);
+    array_splice($Table1, $Rem3, 0, 2);
+    array_splice($Table1, $Rem4, 0, 3);
+    array_splice($Table1, $Rem5, 0, 4);
+
+    $cell--;
+    $RemT = $RemT%5;      //  Between 0 and 4, fairly uniformly.
+    $x = ($cell+$RemT)%5;     //  RemT is horizontal shift to put any diagonal on the main diagonal.
+    $y = floor($cell/5);
+
+    // The Tables are set into a single magic square template
+    // Some are the same up to some rotation, reflection, or row permutation.
+    // However, all genuinely different magic squares can arise in this fashion.
+    $e5 = $Table5[($x + 3*$y)%5];
+    $e1 = $Table1[(3*$x + $y)%5];
+
+    // Table5 controls the 5* part and Table1 controls the 1* part.
+    $value = 5*$e5 + $e1 + 1;
+    return $value;
+}
+
+// unused, but may come in handy someday
 function validate_board($board)
 {
     $valid = true;
@@ -146,61 +215,6 @@ function validate_board($board)
     //echo "<hr>";
 
     return $valid;
-}
-
-// This creates a 5x5 magic square using 1-25
-// To create the magic square we need 2 random orderings of the numbers 0, 1, 2, 3, 4.
-// The following creates those orderings and calls them Table5 and Table1
-function difficulty($cell, $seed)
-{
-    $Num3 = $seed%1000;   // Table5 will use the ones, tens, and hundreds digits.
-
-    $Rem8 = $Num3%8;
-    $Rem4 = floor($Rem8/2);
-    $Rem2 = $Rem8%2;
-    $Rem5 = $Num3%5;
-    $Rem3 = $Num3%3;  // Note that Rem2, Rem3, Rem4, and Rem5 are mathematically independent.
-    $RemT = floor($Num3/120);    // This is between 0 and 8
-
-    // The idea is to begin with an array containing a single number, 0.
-    // Each number 1 through 4 is added in a random spot in the array's current size.
-    // The result - the numbers 0 to 4 are in the array in a random (and uniform) order.
-    $Table5 = [0];
-    array_splice($Table5, $Rem2, 0, 1);
-    array_splice($Table5, $Rem3, 0, 2);
-    array_splice($Table5, $Rem4, 0, 3);
-    array_splice($Table5, $Rem5, 0, 4);
-
-    $Num3 = floor($seed/1000);   // Table1 will use the next 3 digits.
-    $Num3 = $Num3%1000;
-
-    $Rem8 = $Num3%8;
-    $Rem4 = floor($Rem8/2);
-    $Rem2 = $Rem8%2;
-    $Rem5 = $Num3%5;
-    $Rem3 = $Num3%3;
-    $RemT = $RemT * 8 + floor($Num3/120);  // This is between 0 and 64.
-
-    $Table1 = [0];
-    array_splice($Table1, $Rem2, 0, 1);
-    array_splice($Table1, $Rem3, 0, 2);
-    array_splice($Table1, $Rem4, 0, 3);
-    array_splice($Table1, $Rem5, 0, 4);
-
-    $cell--;
-    $RemT = $RemT%5;      //  Between 0 and 4, fairly uniformly.
-    $x = ($cell+$RemT)%5;     //  RemT is horizontal shift to put any diagonal on the main diagonal.
-    $y = floor($cell/5);
-
-    // The Tables are set into a single magic square template
-    // Some are the same up to some rotation, reflection, or row permutation.
-    // However, all genuinely different magic squares can arise in this fashion.
-    $e5 = $Table5[($x + 3*$y)%5];
-    $e1 = $Table1[(3*$x + $y)%5];
-
-    // Table5 controls the 5* part and Table1 controls the 1* part.
-    $value = 5*$e5 + $e1 + 1;
-    return $value;
 }
 
 function make_seed()
