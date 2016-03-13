@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 13, 2016 at 07:19 PM
+-- Generation Time: Mar 13, 2016 at 10:27 PM
 -- Server version: 10.1.10-MariaDB
 -- PHP Version: 5.6.19
 
@@ -180,7 +180,7 @@ CREATE TABLE `bingo_settings` (
 --
 
 INSERT INTO `bingo_settings` (`setting`, `value`) VALUES
-('rules_html', '<ul>\r\n                            <li>All Glitches are allowed.</li>\r\n                            <li>Use of Japanese v1.0 is recommended, but all official versions are allowed. SRL emulator rules apply.</li>\r\n                            <li>You must load a dungeon properly to collect its Pendant, Crystal, Big Key, Map, or Compass.</li>\r\n                            <li>Swordless Goals only prohibit the possession of a sword in the dungeon, loaded or unloaded, pertaining to the Goal.</li>\r\n                        </ul>');
+('rules_markdown', '- All Glitches are allowed.\r\n- Use of Japanese v1.0 is recommended, but all official versions are allowed. [SRL emulator rules](http://www.speedrunslive.com/races/game/#!/alttp/1) apply.\r\n- You must load a dungeon properly to complete it, as well as obtain its map, compass, big key, and small keys.\r\n- Swordless goals only prohibit the possession of a sword within the boss room of the dungeon.');
 
 -- --------------------------------------------------------
 
