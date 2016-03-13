@@ -1,5 +1,7 @@
 <?php
 
+set_time_limit(0);
+
 require_once('inc/lib.php');
 
 $seed = make_seed();
@@ -7,7 +9,6 @@ $seed = make_seed();
 try
 {
     $board = generate_board($seed);
-    var_dump($board);
 }
 catch (Exception $e)
 {

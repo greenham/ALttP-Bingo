@@ -79,6 +79,8 @@ function generate_board($seed, $mode = 'normal', $size = 5)
 
 function validate_board($board)
 {
+    $valid = true;
+
     $bingos = [
         // rows
         [1,2,3,4,5],
@@ -112,11 +114,14 @@ function validate_board($board)
         }
     }
 
+    //echo '<pre>'; var_dump($cell_bingos); die;
+
     // for each cell, verify that that for each of its valid bingos, it does not contain X or more of the same exclusion group
     $group_limit = 2;
     foreach($cell_bingos as $cell => $bingo_ids)
     {
         $cell_group = $board[$cell]->exclusion_group;
+        //echo "[Cell {$cell}] <strong>{$board[$cell]->name}</strong> | EG: {$cell_group}<br>";
         foreach($bingo_ids as $id)
         {
             $group_count = 1;
@@ -126,17 +131,21 @@ function validate_board($board)
                 if ($bingo_cell != $cell && $board[$cell]->exclusion_group == $board[$bingo_cell]->exclusion_group)
                 {
                     $group_count++;
+                    //echo "-- [Cell {$bingo_cell}] <strong>{$board[$bingo_cell]->name}</strong> in bingo {$id} has matching exclusion group ({$board[$bingo_cell]->exclusion_group})!<br>";
                 }
-            }
 
-            if ($group_count > $group_limit)
-            {
-                return false;
+                if ($group_count > $group_limit)
+                {
+                    //echo " EXCEEDED LIMIT!<br>";
+                    $valid = false;
+                    break 3;
+                }
             }
         }
     }
+    //echo "<hr>";
 
-    return true;
+    return $valid;
 }
 
 // This creates a 5x5 magic square using 1-25

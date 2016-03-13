@@ -14,6 +14,8 @@ function bingosetup() {
 
   var generateBoard = function()
   {
+    // @todo show overlay while it's generating
+
     // generate the bingos
     $.post('bingo.php', bingoOpts, function(data, textStatus, xhr) {
       if (data.error || !data.board)
