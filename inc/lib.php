@@ -2,7 +2,7 @@
 
 require_once('inc/db.php');
 
-const BINGO_VERSION = "2.3";
+const BINGO_VERSION = "3.0";
 
 function init_db()
 {
@@ -48,6 +48,21 @@ function generate_board($seed, $mode = 'normal', $size = 5)
     $board = [];
 
     $goals = get_goals_by_difficulty();
+    $original_goals = $goals;
+    $board_is_valid = false;
+
+    // EG map lulz
+    $eg_map = [
+        1=>1,2=>2,3=>3,4=>4,5=>5,
+        6=>3,7=>4,8=>5,9=>1,10=>2,
+        11=>5,12=>1,13=>2,14=>3,15=>4,
+        16=>2,17=>3,18=>4,19=>5,20=>1,
+        21=>4,22=>5,23=>1,24=>2,25=>3,
+    ];
+
+    // @todo random rotations/reflections for the EG map
+
+    $goals = $original_goals;
 
     for ($i = 1; $i <= 25; $i++)
     {
@@ -55,8 +70,15 @@ function generate_board($seed, $mode = 'normal', $size = 5)
         $group_goals = $goals[$difficulty];
         shuffle($group_goals);
 
-        // get a random goal with this difficulty
-        $goal = $group_goals[array_rand($group_goals)];
+        // get a random goal with this difficulty AND exclusion group
+        foreach($group_goals as $gg)
+        {
+            if ($gg->exclusion_group == $eg_map[$i])
+            {
+                $goal = $gg;
+                break;
+            }
+        }
 
         // add it to the final board
         $board[$i] = $goal;
@@ -68,11 +90,11 @@ function generate_board($seed, $mode = 'normal', $size = 5)
     return $board;
 }
 
+// This creates a 5x5 magic square using 1-25
+// To create the magic square we need 2 random orderings of the numbers 0, 1, 2, 3, 4.
+// The following creates those orderings and calls them Table5 and Table1
 function difficulty($cell, $seed)
 {
-    // To create the magic square we need 2 random orderings of the numbers 0, 1, 2, 3, 4.
-    // The following creates those orderings and calls them Table5 and Table1
-
     $Num3 = $seed%1000;   // Table5 will use the ones, tens, and hundreds digits.
 
     $Rem8 = $Num3%8;
@@ -123,6 +145,78 @@ function difficulty($cell, $seed)
     return $value;
 }
 
+// unused, but may come in handy someday
+function validate_board($board)
+{
+    $valid = true;
+
+    $bingos = [
+        // rows
+        [1,2,3,4,5],
+        [6,7,8,9,10],
+        [11,12,13,14,15],
+        [16,17,18,19,20],
+        [21,22,23,24,25],
+        // cols
+        [1,6,11,16,21],
+        [2,7,12,17,22],
+        [3,8,13,18,23],
+        [4,9,14,19,24],
+        [5,10,15,20,25],
+        // diags
+        [1,7,13,19,25],
+        [5,9,13,17,21],
+    ];
+
+    // organize into an array of cell ID => [bingo IDs]
+    $cell_bingos = [];
+    foreach($bingos as $id => $bingo)
+    {
+        foreach($bingo as $cell)
+        {
+            if (!isset($cell_bingos[$cell]))
+            {
+                $cell_bingos[$cell] = [];
+            }
+
+            $cell_bingos[$cell][] = $id;
+        }
+    }
+
+    //echo '<pre>'; var_dump($cell_bingos); die;
+
+    // for each cell, verify that that for each of its valid bingos, it does not contain X or more of the same exclusion group
+    $group_limit = 2;
+    foreach($cell_bingos as $cell => $bingo_ids)
+    {
+        $cell_group = $board[$cell]->exclusion_group;
+        //echo "[Cell {$cell}] <strong>{$board[$cell]->name}</strong> | EG: {$cell_group}<br>";
+        foreach($bingo_ids as $id)
+        {
+            $group_count = 1;
+            $the_bingo = $bingos[$id];
+            foreach($the_bingo as $bingo_cell)
+            {
+                if ($bingo_cell != $cell && $board[$cell]->exclusion_group == $board[$bingo_cell]->exclusion_group)
+                {
+                    $group_count++;
+                    //echo "-- [Cell {$bingo_cell}] <strong>{$board[$bingo_cell]->name}</strong> in bingo {$id} has matching exclusion group ({$board[$bingo_cell]->exclusion_group})!<br>";
+                }
+
+                if ($group_count > $group_limit)
+                {
+                    //echo " EXCEEDED LIMIT!<br>";
+                    $valid = false;
+                    break 3;
+                }
+            }
+        }
+    }
+    //echo "<hr>";
+
+    return $valid;
+}
+
 function make_seed()
 {
     return mt_rand(100000, 999999);
@@ -144,7 +238,7 @@ function get_goals()
     $goals = [];
     while ($goal = $result->fetch_object())
     {
-        $goals[] = $goal;
+        $goals[$goal->id] = $goal;
     }
 
     $result->free();
@@ -171,16 +265,16 @@ function get_goal_stats()
 
     $stats = [];
     $difficulties = 25;
-    $flute_locations = 8;
+    $exclusion_groups = 5;
 
     $select[] = "COUNT(*) AS `total_goals`";
     for($i = 1; $i <= $difficulties; $i++) {
         $select[] = "SUM(CASE WHEN (`difficulty` = {$i}) THEN 1 ELSE 0 END) AS `{$i}_difficulty_count`";
     }
 
-    for($i = 1; $i <= $flute_locations; $i++)
+    for($i = 1; $i <= $exclusion_groups; $i++)
     {
-        $select[] = "SUM(CASE WHEN (`nearest_flute_location` = {$i}) THEN 1 ELSE 0 END) AS `{$i}_flute_location_count`";
+        $select[] = "SUM(CASE WHEN (`exclusion_group` = {$i}) THEN 1 ELSE 0 END) AS `{$i}_exclusion_group_count`";
     }
 
     $stats_sql = "SELECT ";
@@ -201,10 +295,10 @@ function get_goal_stats()
             $difficulty = str_replace('_difficulty_count', '', $key);
             $stats['difficulties'][$difficulty] = $value;
         }
-        else if (strpos($key, '_flute_location_count') !== false)
+        else if (strpos($key, '_exclusion_group_count') !== false)
         {
-            $location = str_replace('_flute_location_count', '', $key);
-            $stats['flute_locations'][$location] = $value;
+            $location = str_replace('_exclusion_group_count', '', $key);
+            $stats['exclusion_groups'][$location] = $value;
         }
         else
         {
@@ -219,7 +313,7 @@ function create_goal($data)
 {
     $db = init_db();
 
-    $required_fields = ['name', 'difficulty', 'nearest_flute_location'];
+    $required_fields = ['name', 'difficulty', 'exclusion_group'];
     foreach($required_fields as $field)
     {
         if (!isset($data[$field]))

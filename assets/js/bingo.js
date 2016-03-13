@@ -14,6 +14,8 @@ function bingosetup() {
 
   var generateBoard = function()
   {
+    // @todo show overlay while it's generating
+
     // generate the bingos
     $.post('bingo.php', bingoOpts, function(data, textStatus, xhr) {
       if (data.error || !data.board)
@@ -31,8 +33,8 @@ function bingosetup() {
       {
         $square = $('#slot'+cell);
         $square
-          .html('<strong>'+data.board[cell].name + '</strong>')//<br>D: ' + data.board[cell].difficulty)
-          .attr('title', 'Nearest Flute: ' + data.board[cell].nearest_flute_location);
+          .html('<strong>'+data.board[cell].name + '</strong>')//<br>D: ' + data.board[cell].difficulty + ' | G: ' + data.board[cell].exclusion_group)
+          .attr('title', 'Group: ' + data.board[cell].exclusion_group);
       }
 
       $("span#debug").html("<p>ALttP Bingo <strong>v" + data.version + "</strong> &emsp;Seed: <strong>" + bingoOpts.seed + "</strong>&emsp;Card type: <strong>" + cardType + "</strong></p>");

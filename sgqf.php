@@ -121,7 +121,7 @@ $stats = get_goal_stats();
                             <div id="difficulty-distribution"></div>
                         </div>
                         <div class="col-md-6">
-                            <div id="flute-location-distribution"></div>
+                            <div id="group-distribution"></div>
                         </div>
                     </div>
                     <?
@@ -136,7 +136,7 @@ $stats = get_goal_stats();
                 <tr>
                     <th>Goal</th>
                     <th>Difficulty</th>
-                    <th>Nearest Flute</th>
+                    <th>Group</th>
                     <th></th>
                 </tr>
             </thead>
@@ -144,7 +144,7 @@ $stats = get_goal_stats();
                 <tr>
                     <td><input type="text" name="name" value="" size="20" placeholder="New Goal Name" class="form-control input-sm"></td>
                     <td><input type="number" name="difficulty" value="" min="1" max="25" class="form-control input-sm"></td>
-                    <td><input type="number" name="nearest_flute_location" value="" min="1" max="8" class="form-control input-sm"></td>
+                    <td><input type="number" name="exclusion_group" value="" min="1" max="5" class="form-control input-sm"></td>
                     <td><button id="add-goal-btn" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-plus"></i> Add Goal</button></td>
                 </tr>
                 <? foreach($goals as $goal): ?>
@@ -156,7 +156,7 @@ $stats = get_goal_stats();
                             <input type="number" name="difficulty" value="<?= $goal->difficulty; ?>" min="1" max="25" class="form-control input-sm">
                         </td>
                         <td>
-                            <input type="number" name="nearest_flute_location" value="<?= $goal->nearest_flute_location; ?>" min="1" max="8" class="form-control input-sm">
+                            <input type="number" name="exclusion_group" value="<?= $goal->exclusion_group; ?>" min="1" max="8" class="form-control input-sm">
                         </td>
                         <td>
                             <button class="save-goal-btn btn btn-sm btn-default"><i class="glyphicon glyphicon-floppy-disk"></i> Save</button><button class="delete-goal-btn btn btn-xs btn-danger pull-right" title="Delete Goal"><i class="glyphicon glyphicon-trash"></i></button>
@@ -318,16 +318,16 @@ $(function() {
             chart.draw(data, options);
             <? endif; ?>
 
-            <? if (!empty($stats['flute_locations'])): ?>
+            <? if (!empty($stats['exclusion_groups'])): ?>
             var data = google.visualization.arrayToDataTable([
-              ['Difficulty', 'Count']<? foreach($stats['flute_locations'] as $location => $count): ?>, ['<?= $location; ?>', <?= $count; ?>]<? endforeach; ?>
+              ['Group', 'Count']<? foreach($stats['exclusion_groups'] as $location => $count): ?>, ['<?= $location; ?>', <?= $count; ?>]<? endforeach; ?>
             ]);
             var options = {
-              title: 'Location Distribution',
+              title: 'Group Distribution',
               width: 500,
               height: 250
             };
-            var chart = new google.visualization.PieChart(document.getElementById('flute-location-distribution'));
+            var chart = new google.visualization.PieChart(document.getElementById('group-distribution'));
             chart.draw(data, options);
             <? endif; ?>
         }
