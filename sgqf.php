@@ -136,7 +136,7 @@ $stats = get_goal_stats();
                 <tr>
                     <th>Goal</th>
                     <th>Difficulty</th>
-                    <th>Nearest Flute</th>
+                    <th>Group</th>
                     <th></th>
                 </tr>
             </thead>
@@ -144,7 +144,7 @@ $stats = get_goal_stats();
                 <tr>
                     <td><input type="text" name="name" value="" size="20" placeholder="New Goal Name" class="form-control input-sm"></td>
                     <td><input type="number" name="difficulty" value="" min="1" max="25" class="form-control input-sm"></td>
-                    <td><input type="number" name="exclusion_group" value="" min="1" max="8" class="form-control input-sm"></td>
+                    <td><input type="number" name="exclusion_group" value="" min="1" max="5" class="form-control input-sm"></td>
                     <td><button id="add-goal-btn" class="btn btn-sm btn-primary"><i class="glyphicon glyphicon-plus"></i> Add Goal</button></td>
                 </tr>
                 <? foreach($goals as $goal): ?>

@@ -48,24 +48,95 @@ function generate_board($seed, $mode = 'normal', $size = 5)
     $board = [];
 
     $goals = get_goals_by_difficulty();
+    $original_goals = $goals;
+    $board_is_valid = false;
 
-    for ($i = 1; $i <= 25; $i++)
+    while($board_is_valid === false)
     {
-        $difficulty = difficulty($i, $seed);
-        $group_goals = $goals[$difficulty];
-        shuffle($group_goals);
+        $goals = $original_goals;
 
-        // get a random goal with this difficulty
-        $goal = $group_goals[array_rand($group_goals)];
+        for ($i = 1; $i <= 25; $i++)
+        {
+            $difficulty = difficulty($i, $seed);
+            $group_goals = $goals[$difficulty];
+            shuffle($group_goals);
 
-        // add it to the final board
-        $board[$i] = $goal;
+            // get a random goal with this difficulty
+            $goal = $group_goals[array_rand($group_goals)];
 
-        // remove it from the pool
-        unset($goals[$difficulty][$goal->id]);
+            // add it to the final board
+            $board[$i] = $goal;
+
+            // remove it from the pool
+            unset($goals[$difficulty][$goal->id]);
+        }
+
+        $board_is_valid = validate_board($board);
     }
 
     return $board;
+}
+
+function validate_board($board)
+{
+    $bingos = [
+        // rows
+        [1,2,3,4,5],
+        [6,7,8,9,10],
+        [11,12,13,14,15],
+        [16,17,18,19,20],
+        [21,22,23,24,25],
+        // cols
+        [1,6,11,16,21],
+        [2,7,12,17,22],
+        [3,8,13,18,23],
+        [4,9,14,19,24],
+        [5,10,15,20,25],
+        // diags
+        [1,7,13,19,25],
+        [5,9,13,17,21],
+    ];
+
+    // organize into an array of cell ID => [bingo IDs]
+    $cell_bingos = [];
+    foreach($bingos as $id => $bingo)
+    {
+        foreach($bingo as $cell)
+        {
+            if (!isset($cell_bingos[$cell]))
+            {
+                $cell_bingos[$cell] = [];
+            }
+
+            $cell_bingos[$cell][] = $id;
+        }
+    }
+
+    // for each cell, verify that that for each of its valid bingos, it does not contain X or more of the same exclusion group
+    $group_limit = 2;
+    foreach($cell_bingos as $cell => $bingo_ids)
+    {
+        $cell_group = $board[$cell]->exclusion_group;
+        foreach($bingo_ids as $id)
+        {
+            $group_count = 1;
+            $the_bingo = $bingos[$id];
+            foreach($the_bingo as $bingo_cell)
+            {
+                if ($bingo_cell != $cell && $board[$cell]->exclusion_group == $board[$bingo_cell]->exclusion_group)
+                {
+                    $group_count++;
+                }
+            }
+
+            if ($group_count > $group_limit)
+            {
+                return false;
+            }
+        }
+    }
+
+    return true;
 }
 
 // This creates a 5x5 magic square using 1-25
@@ -144,7 +215,7 @@ function get_goals()
     $goals = [];
     while ($goal = $result->fetch_object())
     {
-        $goals[] = $goal;
+        $goals[$goal->id] = $goal;
     }
 
     $result->free();
