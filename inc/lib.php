@@ -2,7 +2,7 @@
 
 require_once('inc/db.php');
 
-const BINGO_VERSION = "3.1";
+const BINGO_VERSION = "3.1.1";
 
 function init_db()
 {
