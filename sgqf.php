@@ -65,6 +65,19 @@ if (isset($_POST['action']))
             }
             exit;
             break;
+        case 'update-rules':
+            $rules = $_POST['rules'];
+            $updated = update_setting('rules_markdown', $rules);
+            if ($updated === true)
+            {
+                output_json(['success' => true]);
+            }
+            else
+            {
+                output_json(['error' => "Unable to update rules!"]);
+            }
+            exit;
+            break;
         case 'logout':
             $destroyed = session_destroy();
             if ($destroyed === true)
@@ -82,6 +95,7 @@ if (isset($_POST['action']))
 
 $goals = get_goals();
 $stats = get_goal_stats();
+$settings = get_settings();
 
 ?>
 
@@ -104,7 +118,7 @@ $stats = get_goal_stats();
 <body>
     <div class="container well">
         <span class="pull-right" id="top-nav-links">
-            <a href="#" class="btn btn-sm btn-default" id="toggle-more-stats-link"><i class="glyphicon glyphicon-tasks"></i> Toggle Stats</a> <a href="#" class="btn btn-sm btn-default logout-link"><i class="glyphicon glyphicon-log-out"></i> Logout</a>
+            <a href="#" class="btn btn-sm btn-default" id="toggle-edit-rules"><i class="glyphicon glyphicon-cog"></i> Edit Rules</a> <a href="#" class="btn btn-sm btn-default" id="toggle-more-stats-link"><i class="glyphicon glyphicon-tasks"></i> Toggle Stats</a> <a href="#" class="btn btn-sm btn-default logout-link"><i class="glyphicon glyphicon-log-out"></i> Logout</a>
         </span>
 
         <h2>A Link to the Past Bingo Goals<?= isset($stats['total_goals']) ? " <small>Current Total: {$stats['total_goals']}</small>":''; ?></h2>
@@ -130,6 +144,12 @@ $stats = get_goal_stats();
         </div>
 
         <p class="clearfix"><br></p>
+
+        <div id="rules" class="text-center" style="display: none;">
+            <button id="save-rules" class="btn btn-sm btn-primary pull-right"><i class="glyphicon glyphicon-floppy-disk"></i> Save Rules</button><br>
+            <label>Edit Rules (<a href="https://daringfireball.net/projects/markdown/syntax" target="_blank">Markdown Format</a>)</label>
+            <textarea rows="8" class="form-control" name="rules_markdown"><?= $settings['rules_markdown']; ?></textarea>
+        </div>
 
         <table class="table table-striped">
             <thead>
@@ -276,7 +296,32 @@ $(function() {
     });
 
     $('#toggle-more-stats-link').on('click', function (e) {
-        $('#more-stats').toggle();
+        $('#more-stats').slideToggle();
+    });
+
+    $('#toggle-edit-rules').on('click', function (e) {
+        $('#rules').slideToggle();
+    });
+
+    $('#save-rules').on('click', function (e) {
+        var $btn = $(this);
+        var btnText = lock_button($btn);
+
+        var rules = $('[name="rules_markdown"]').val();
+        $.post('sgqf.php', {action: 'update-rules', rules: rules}, function(data, textStatus, xhr) {
+            unlock_button($btn, btnText);
+
+            if (data.error)
+            {
+                // highlight/flash row
+                $btn.effect("highlight", {color: "#FF4040"});
+                alert(data.error);
+                return false;
+            }
+
+            // highlight/flash row
+            $btn.effect("highlight", {color: "#93DB70"});
+        });
     });
 
     <? if (!empty($stats)): ?>

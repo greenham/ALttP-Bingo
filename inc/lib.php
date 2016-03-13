@@ -330,6 +330,8 @@ function get_goal_stats()
         }
     }
 
+    $result->free();
+
     return $stats;
 }
 
@@ -397,6 +399,28 @@ function delete_goal($id)
 
 //////////////////////////////////////////////////////////////
 // Site settings
+function get_settings()
+{
+    $db = init_db();
+
+    $result = $db->query("SELECT * FROM `bingo_settings`");
+    if (!$result)
+    {
+        error_log("Invalid query: " . $db->error);
+        return false;
+    }
+
+    $settings = [];
+    while ($setting = $result->fetch_object())
+    {
+        $settings[$setting->setting] = $setting->value;
+    }
+
+    $result->free();
+
+    return $settings;
+}
+
 function get_setting($setting)
 {
     $db = init_db();
@@ -410,7 +434,18 @@ function get_setting($setting)
 
     $value = $result->fetch_assoc()['value'];
 
+    $result->free();
+
     return $value;
+}
+
+function update_setting($setting, $value)
+{
+    $db = init_db();
+    $setting = $db->real_escape_string($setting);
+    $value = $db->real_escape_string($value);
+    $result = $db->query("UPDATE `bingo_settings` SET `value` = '{$value}' WHERE `setting` = '{$setting}'");
+    return $result;
 }
 
 //////////////////////////////////////////////////////////////
