@@ -5,14 +5,10 @@ Much of the frontend code has been taken from the [SpeedRunsLive bingo generator
 
 ## Feature Ideas
 ### Bingo
-- Add restrictions for bingos based on flute locations (e.g. a maximum of 2 in any 1 location in a given bingo)
-- Support goal exclusions: ability to exclude a set of goals (or set a max of a certain type) from valid bingos once a particular goal is chosen
 - Add tooltips for information on the goal itself (ways to achieve it, any other metadata)
 
 ### Admin
-- Add ability to edit rules
 - Add field for goal notes
-
 
 ## Installation
 - Create a MySQL database and run `install/install.sql`
