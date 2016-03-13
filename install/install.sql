@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Mar 06, 2016 at 11:15 PM
+-- Generation Time: Mar 13, 2016 at 05:16 PM
 -- Server version: 10.1.10-MariaDB
 -- PHP Version: 5.6.19
 
@@ -17,7 +17,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `alttp_bingo`
+-- Database: `alttp`
 --
 
 -- --------------------------------------------------------
@@ -30,156 +30,157 @@ CREATE TABLE `bingo_goals` (
   `id` int(10) UNSIGNED NOT NULL,
   `name` varchar(100) NOT NULL,
   `difficulty` tinyint(3) UNSIGNED NOT NULL,
-  `nearest_flute_location` tinyint(3) UNSIGNED DEFAULT NULL
+  `exclusion_group` tinyint(3) UNSIGNED DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `bingo_goals`
 --
 
-INSERT INTO `bingo_goals` (`id`, `name`, `difficulty`, `nearest_flute_location`) VALUES
-(1, 'Ganon''s Tower, No Hammer', 25, 1),
-(2, '7th Crystal', 25, 1),
-(3, '3 Armors', 25, 8),
-(4, 'Light World Pendants in Reverse', 25, 5),
-(5, 'Big Blue Pig, no Tempered', 25, 4),
-(6, 'Trinexx, no Tempered', 25, 1),
-(7, 'Ganon''s Tower', 24, 1),
-(8, 'Big Blue Pig', 24, 4),
-(9, 'Open Pyramid Cracked Wall', 24, 4),
-(10, '10 Hearts', 24, 7),
-(11, 'Ice Rod with Super Bomb', 24, 8),
-(12, 'Swap a Big Chest into a Small Chest', 23, 5),
-(13, '6th Crystal', 23, 6),
-(14, 'Mire Compass, no Switches', 23, 6),
-(15, '5th Crystal', 23, 8),
-(16, 'Blind, no B Button', 22, 3),
-(17, 'Ganon''s Tower Map + Compass', 22, 1),
-(18, 'Cane of Byrna, no Cape', 22, 1),
-(19, 'Darkness or Skull, No Statues', 22, 5),
-(20, 'Darkness or Skull, No Statues', 22, 7),
-(21, 'Blue Mail, no Bombs', 22, 8),
-(22, 'Moldorm Re-Fight', 21, 1),
-(23, '4 Swords', 21, 4),
-(24, 'Mire Map + Compass', 21, 6),
-(25, '2nd Crystal', 21, 7),
-(26, 'Ice Map + Compass', 21, 8),
-(27, 'Turtle Rock Map + Compass', 20, 1),
-(28, 'Lanmolas Refight', 20, 1),
-(29, 'Darkness BK, no Bombs', 20, 5),
-(30, 'Pendant of Courage, Swordless', 20, 5),
-(31, 'Blue Mail', 20, 8),
-(32, 'Armos Refight', 19, 1),
-(33, 'Red Mail', 19, 1),
-(34, '3 Shields', 19, 2),
-(35, '3rd Crystal, no Moon Pearl', 19, 3),
-(36, 'Hookshot', 19, 7),
-(37, 'Move 3 Walls', 19, 6),
-(38, 'LSD Blind', 18, 3),
-(39, 'Mirror Shield', 18, 1),
-(40, '3 Medallions', 18, 2),
-(41, '1st Crystal', 18, 5),
-(42, 'Swamp Map + Compass', 18, 7),
-(43, '2 Canes', 17, 2),
-(44, '3rd Crystal', 17, 3),
-(45, 'Lumberjack''s HP', 17, 3),
-(46, 'Boomerang after Agahnim', 17, 4),
-(47, 'Darkness Map + Compass', 17, 5),
-(48, '4 Magic Consuming Items', 17, 7),
-(49, '4th Crystal', 16, 3),
-(50, 'Skull Map + Compass', 16, 3),
-(51, 'Hyrule Castle + Aga Tower, no EG', 16, 4),
-(52, 'Close the Castle', 16, 4),
-(53, 'Kill a Boss with Silver Arrows', 16, 8),
-(54, 'Kill a Boss with 3+ Keys On-Hand', 15, 4),
-(55, 'Blue Rupee Room in a DW Dungeon', 15, 5),
-(56, 'Cane of Somaria', 15, 6),
-(57, 'Blue Rupee Room in DW Dungeon', 15, 7),
-(58, 'Red Rupee from a Dungeon Chest', 15, 7),
-(59, 'Use Silver Bee in a Boss Battle', 15, 8),
-(60, 'Cane of Byrna', 14, 1),
-(61, 'Zora''s HP', 14, 2),
-(62, 'Master Sword', 14, 3),
-(63, 'Flute, no Moon Pearl', 14, 4),
-(64, 'Pendant of Power, no Gloves', 14, 6),
-(65, 'Hera BK, no Lamp', 13, 1),
-(66, 'Fire Rod, no Bombs', 13, 3),
-(67, 'Digging Game HP', 13, 3),
-(68, 'Gold Sword + Silver Arrows', 13, 4),
-(69, 'Chest Game HP', 12, 3),
-(70, 'Bombos', 12, 6),
-(71, 'Purple Chest Bottle', 12, 7),
-(72, 'Lake Hylia HP', 12, 8),
-(73, 'Dark DM Island HP', 11, 1),
-(74, 'Defeat 3 Lynels', 11, 1),
-(75, 'Quake', 11, 2),
-(76, 'Fire Rod', 11, 3),
-(77, 'Flute', 11, 4),
-(78, 'Open Darkness', 11, 5),
-(79, 'Flippers', 10, 2),
-(80, 'Get two Zeldas inside Sanctuary', 10, 2),
-(81, 'Tempered Sword', 10, 3),
-(82, 'Blue Shield', 10, 3),
-(83, '1/2 Magic', 10, 3),
-(84, 'Mid TRock HP', 9, 1),
-(85, 'Pendant of Wisdom, no Mirror', 9, 1),
-(86, 'Fire Shield', 9, 2),
-(87, 'Cape HP', 9, 3),
-(88, 'End Mire Rain', 9, 6),
-(89, '$ From 4 Unique Types of Objects', 9, 7),
-(90, 'Pendant of Wisdom', 8, 1),
-(91, 'Cape', 8, 3),
-(92, 'Peg HP', 8, 3),
-(93, 'Houlihan Room', 8, 4),
-(94, 'Pendant of Power', 8, 6),
-(95, '6 Different 50 Rupee Chests', 8, 7),
-(96, 'Cape, no Mirror', 8, 7),
-(97, 'Ether', 7, 1),
-(98, 'Powder', 7, 2),
-(99, 'Titan''s Mitts', 7, 3),
-(100, 'Thieves'' Map + Compass', 7, 3),
-(101, 'Graveyard HP', 7, 3),
-(102, 'Bridge Bottle', 7, 5),
-(103, 'Pendant of Power, no Mudora', 7, 6),
-(104, 'Magic Boomerang', 6, 2),
-(105, 'Pyramid HP', 6, 4),
-(106, 'Hammer', 6, 5),
-(107, 'Power Gloves', 6, 6),
-(108, 'Desert Map + Compass', 6, 6),
-(109, 'NE Desert HP', 6, 6),
-(110, 'Mire HP', 6, 6),
-(111, 'South of Flute Grotto HP', 5, 4),
-(112, 'Buy Shield', 5, 4),
-(113, 'Eastern Map + Compass', 5, 5),
-(114, 'Mid-Desert HP', 5, 6),
-(115, 'Talk to the Hand', 5, 8),
-(116, 'Single Arrow Chest', 5, 5),
-(117, 'Hit Crystal Switch in a Cave', 5, 1),
-(118, 'Moon Pearl', 4, 1),
-(119, 'Spectacle Rock HP', 4, 1),
-(120, 'Death Mtn Cave HP', 4, 1),
-(121, 'Perfect Arrow Mini-Game', 4, 3),
-(122, 'Sanctuary HP', 4, 3),
-(123, 'Ice Rod', 4, 8),
-(124, '5 Equips from NPCs', 4, 8),
-(125, 'Hera Map + Compass', 3, 1),
-(126, 'Blue Potion', 3, 2),
-(127, '300 Rupees from Chest Game', 3, 3),
-(128, 'Pendant of Courage', 3, 5),
-(129, 'Aginah HP', 3, 6),
-(130, 'Red Potion', 2, 2),
-(131, 'Green Potion', 2, 2),
-(132, 'Net', 2, 3),
-(133, 'Lost Woods HP', 2, 3),
-(134, 'Hideout HP', 2, 3),
-(135, 'Bow', 2, 5),
-(136, 'Sell Fish to Merchant', 2, 7),
-(137, 'Buy a Bee', 2, 8),
-(138, 'Well HP', 1, 3),
-(139, 'Race HP', 1, 3),
-(140, 'Hyrule Castle Map', 1, 4),
-(141, 'Swamp Floodgate HP', 1, 7),
-(142, 'Have Fortune Told', 1, 8);
+INSERT INTO `bingo_goals` (`id`, `name`, `difficulty`, `exclusion_group`) VALUES
+(1, 'Freeze and then Burn an Enemy', 1, 1),
+(2, 'Translate all 4 pieces of Hylian text', 1, 2),
+(3, 'Collect both types of Bee', 1, 3),
+(4, 'Perfect archery game', 1, 4),
+(5, 'Buy and Sell wares with the Merchant', 1, 5),
+(6, 'All 4 LW maps', 2, 1),
+(7, 'Visit a faerie room in each LW dungeon', 2, 2),
+(8, 'Hera Big Key, no lamp', 2, 3),
+(9, 'All 3 LW compasses', 2, 4),
+(10, 'Defeat Lanmolas'', no sword or bow', 2, 5),
+(11, 'Buy two different shields', 3, 1),
+(12, 'Destroy both Hylian stone tablets', 3, 2),
+(13, 'All 4 bottles', 3, 3),
+(14, 'Cane of Byrna, no Bug Net or Magic Cape', 3, 4),
+(15, 'Unlock the purple chest', 3, 5),
+(16, '8 heart pieces', 4, 1),
+(17, 'All 3 medallions', 4, 2),
+(18, 'All 3 potions', 4, 3),
+(19, '2 different potions, no Potion Shop', 4, 4),
+(20, 'Defeat 4 bosses', 4, 5),
+(21, 'Open 6 50 rupee chests', 5, 1),
+(22, 'Open 6 chests containing 3 bombs', 5, 2),
+(23, 'Obtain 300 rupees from five chests/NPC''s', 5, 3),
+(24, 'Collect all 6 types of rupee chest', 5, 4),
+(25, 'Get healed by 5 Great Faeries', 5, 5),
+(26, '12 heart pieces', 6, 1),
+(27, '7 DW heart pieces', 6, 2),
+(28, 'All 7 LW overworld heart pieces', 6, 3),
+(29, '10 hearts', 6, 4),
+(30, 'Defeat 6 bosses', 6, 5),
+(31, '1 Crystal, no Magic Mirror', 7, 1),
+(32, 'Open two Big Chests, swordless', 7, 2),
+(33, '1 Crystal, no Moon Pearl', 7, 3),
+(34, 'Magic Cape, no Magic Mirror', 7, 4),
+(35, 'Flute, no Moon Pearl', 7, 5),
+(36, 'Crystal #1', 8, 1),
+(37, 'Blue rupee room, DW dungeon', 8, 2),
+(38, 'Defeat 15 turtles', 8, 3),
+(39, 'PoD map and compass', 8, 4),
+(40, 'Open 10 small chests in PoD', 8, 5),
+(41, 'Crystal #4', 9, 1),
+(42, 'Downgrade Titan''s Mitts', 9, 2),
+(43, 'Defeat Blind, swordbeams only', 9, 3),
+(44, 'Use all 6 warp tiles underneath rocks', 9, 4),
+(45, 'Defeat Blind, no sword or hammer', 9, 5),
+(46, 'Open 5 arrow chests, no gambling', 10, 1),
+(47, '3 telepathy tiles outside of dungeons', 10, 2),
+(48, 'Downgrade a sword', 10, 3),
+(49, 'Link has been followed by 4 different NPC''s', 10, 4),
+(50, 'Kill yourself in one hit at full health', 10, 5),
+(51, 'Crystal #3', 11, 1),
+(52, 'Skull Woods, no statues', 11, 2),
+(53, 'Defeat a boss, Fire/Ice Rods only', 11, 3),
+(54, 'Defeat Mothula, swordless', 11, 4),
+(55, 'Defeat Mothula, Cane of Somaria', 11, 5),
+(56, 'All 4 swords', 12, 1),
+(57, 'Obtain Bombos + Ether with different swords', 12, 2),
+(58, 'Defeat a boss, Master Sword only', 12, 3),
+(59, 'Defeat a Lynel with the Gold Sword', 12, 4),
+(60, 'Obtain the Gold Sword twice', 12, 5),
+(61, 'Crystal #6', 13, 1),
+(62, 'Misery Mire, 100% map completion', 13, 2),
+(63, 'Defeat Vitreous, bow only (either arrows)', 13, 3),
+(64, 'Misery Mire map and compass', 13, 4),
+(65, 'Visit both blue rupee rooms in Misery Mire', 13, 5),
+(66, 'Crystal #2', 14, 1),
+(67, 'Hookshot', 14, 2),
+(68, 'Defeat Arrghus, swordless', 14, 3),
+(69, 'Swamp map and compass', 14, 4),
+(70, 'Visit the 4 faerie cave on Death Mountain', 14, 5),
+(71, 'Defeat Usain Bolt', 15, 1),
+(72, 'Obtain all 4 small keys in Agahnim''s Tower', 15, 2),
+(73, 'Lumberjack Heart Piece', 15, 3),
+(74, 'Defeat Agahnim 1, swordless', 15, 4),
+(75, 'Defeat a Blue Tektike by Spectacle Rock', 15, 5),
+(76, 'Complete 3 rows of Y-items', 16, 1),
+(77, 'Complete Y-Item top row, max upgrades', 16, 2),
+(78, 'Obtain all 7 blue Y-items', 16, 3),
+(79, 'Obtain 8 items that consume magic', 16, 4),
+(80, 'Complete 3 columns of Y-items', 16, 5),
+(81, 'Crystal #5', 17, 1),
+(82, '3 telepathy tiles in Ice Palace', 17, 2),
+(83, 'Defeat Kholdstare, no Fire Rod', 17, 3),
+(84, 'Ice Palace map and compass', 17, 4),
+(85, 'Blue Sword, Blue Shield, Blue Mail', 17, 5),
+(86, 'Open all entrances to all crystal dungeons', 18, 1),
+(87, '8 Big Chests', 18, 2),
+(88, 'Kill a boss with 3+ spare real keys', 18, 3),
+(89, 'Finish 1 DW dungeon without its Big Key', 18, 4),
+(90, 'Open Pyramid cracked wall', 18, 5),
+(91, '4 DW maps', 19, 1),
+(92, 'Touch a bumper in 4 dungeons', 19, 2),
+(93, 'Defeat a mini helmsaur in 3 dungeons', 19, 3),
+(94, '4 DW compasses', 19, 4),
+(95, 'Open a rupee chest in 4 DW dungeons', 19, 5),
+(96, 'Crystal #7', 20, 1),
+(97, 'Defeat Trinexx, no Tempered/Gold Sword', 20, 2),
+(98, 'All 3 shields', 20, 3),
+(99, 'Turtle Rock map and compass', 20, 4),
+(100, 'Turtle Rock, 100% map completion', 20, 5),
+(101, 'Make 2 chests spawn in 3 DW dungeons', 21, 1),
+(102, 'Move 3 walls', 21, 2),
+(103, 'Defeat a wizzrobe in 2 dungeons', 21, 3),
+(104, 'Use an orange warp tile in 3 DW dungeons', 21, 4),
+(105, 'Completely destroy 2 walls', 21, 5),
+(106, '2 Refights in Ganon''s Tower', 22, 1),
+(107, 'Ganon''s Tower, 100% map completion', 22, 2),
+(108, 'Defeat Agahnim 2 with the Bug Net', 22, 3),
+(109, 'Ganon''s Tower map and compass', 22, 4),
+(110, 'Red Sword, Red Shield, Red Mail', 22, 5),
+(111, 'Defeat Moldorm with all 4 swords', 23, 1),
+(112, 'Open all Big Chests', 23, 2),
+(113, 'Defeat Ganon', 23, 3),
+(114, 'Collect each pendant, swordless', 23, 4),
+(115, 'Yellow Sword, Yellow Hat, Yellow Shield', 23, 5),
+(116, 'Collect 6 heart pieces in the rain', 24, 1),
+(117, 'Reveal 4 hidden floors with Ether', 24, 2),
+(118, 'Defeat Ganon with the Master Sword', 24, 3),
+(119, '15 hearts', 24, 4),
+(120, '3 Mails', 24, 5),
+(121, '3 crystals, no Pegasus Boots', 25, 1),
+(122, 'LW Big Chests in reverse order', 25, 2),
+(123, 'Gold bee, no Pegasus Boots', 25, 3),
+(124, 'Finish 3 dungeons without their Big Keys', 25, 4),
+(125, 'Defeat 4 bosses with canes', 25, 5);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `bingo_settings`
+--
+
+CREATE TABLE `bingo_settings` (
+  `setting` varchar(32) NOT NULL,
+  `value` text NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Dumping data for table `bingo_settings`
+--
+
+INSERT INTO `bingo_settings` (`setting`, `value`) VALUES
+('rules_html', '<ul>\r\n                            <li>All Glitches are allowed.</li>\r\n                            <li>Use of Japanese v1.0 is recommended, but all official versions are allowed. SRL emulator rules apply.</li>\r\n                            <li>You must load a dungeon properly to collect its Pendant, Crystal, Big Key, Map, or Compass.</li>\r\n                            <li>Swordless Goals only prohibit the possession of a sword in the dungeon, loaded or unloaded, pertaining to the Goal.</li>\r\n                        </ul>');
 
 -- --------------------------------------------------------
 
@@ -195,6 +196,17 @@ CREATE TABLE `bingo_users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
+-- Dumping data for table `bingo_users`
+--
+
+INSERT INTO `bingo_users` (`id`, `username`, `password`, `salt`) VALUES
+(1, 'greenham', '$6$N@l!JC4XOtuPrI&y$KYtzQEAQar5yHCsvnjHnquu49mLUNCHEPl0vpp0HT4S0wfEzWyVPjfqUptWl0iJE6yVU75iEthPj0YPTzoqjb1', 'N@l!JC4XOtuPrI&yDz8LVwKTGkghM021'),
+(2, 'seancass', '$6$9OYhmc1wXJNW2s46$IhhaIHO19YD9KIrSpbXjDRK.QTQDK4/aPsp73XDeTHi489qwWAPYV5N.vbIs8wX/QE8p6hzSQj6Lp/S2zDhv51', '9OYhmc1wXJNW2s46#TvFy0pERlzjLfgU'),
+(3, 'brahminmeat', '$6$neMU69hrzVcFx&qg$/OadIiZLBsMKfDZ1.524z19GIX8Gr/AgO8H5BoD5CJTEpTm2Ym3ccoWNVrKZ8ghk90j0lAdwzahzeFQ5kqEk60', 'neMU69hrzVcFx&qgi8oN54W!YG2sdmfy'),
+(4, 'screevo', '$6$lkuF7rxXGBcn5gpt$9pYOImyGvBwk7JOngRxn/0XyBrJPpa9QwWlbERSJRs0JZUEdn9fTo7Yk9eEdge.foAdGPCckJnfFYkH6.ox080', 'lkuF7rxXGBcn5gptYChHbqJWZdSPzIjU'),
+(5, '', '$6$JtAuGnwEHYkp!UWz$FZEWuYhuGaQ2Hn9HcwkbMhrm/LsuaNyMTXBL6S1Kw3HVHbYoDLKh/IEURouxTJGohXIkXCQodEMMdO9PGy/na.', 'JtAuGnwEHYkp!UWzeSjsQyL80V3gN9%I');
+
+--
 -- Indexes for dumped tables
 --
 
@@ -203,6 +215,12 @@ CREATE TABLE `bingo_users` (
 --
 ALTER TABLE `bingo_goals`
   ADD PRIMARY KEY (`id`);
+
+--
+-- Indexes for table `bingo_settings`
+--
+ALTER TABLE `bingo_settings`
+  ADD PRIMARY KEY (`setting`);
 
 --
 -- Indexes for table `bingo_users`
@@ -219,7 +237,7 @@ ALTER TABLE `bingo_users`
 -- AUTO_INCREMENT for table `bingo_goals`
 --
 ALTER TABLE `bingo_goals`
-  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=143;
+  MODIFY `id` int(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=126;
 --
 -- AUTO_INCREMENT for table `bingo_users`
 --

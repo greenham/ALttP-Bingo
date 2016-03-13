@@ -32,7 +32,7 @@ function bingosetup() {
         $square = $('#slot'+cell);
         $square
           .html('<strong>'+data.board[cell].name + '</strong>')//<br>D: ' + data.board[cell].difficulty)
-          .attr('title', 'Nearest Flute: ' + data.board[cell].nearest_flute_location);
+          .attr('title', 'Group: ' + data.board[cell].exclusion_group);
       }
 
       $("span#debug").html("<p>ALttP Bingo <strong>v" + data.version + "</strong> &emsp;Seed: <strong>" + bingoOpts.seed + "</strong>&emsp;Card type: <strong>" + cardType + "</strong></p>");

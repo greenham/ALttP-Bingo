@@ -4,9 +4,15 @@ Bingo Generator for A Link to the Past Speedrunners
 Much of the frontend code has been taken from the [SpeedRunsLive bingo generators](https://github.com/gustafsonk/SRL/tree/master/srl/pages/tools), specifically the [OoT-Bingo](https://github.com/giuocob/OoT-Bingo) generator. The generator itself has been ported to PHP/MySQL with the idea being to support more advanced features and filters for the board generation in the future.
 
 ## Feature Ideas
+### Bingo
 - Add restrictions for bingos based on flute locations (e.g. a maximum of 2 in any 1 location in a given bingo)
-- Support goal exclusions: ability to exclude a set of goals from valid bingos once a particular goal is chosen
+- Support goal exclusions: ability to exclude a set of goals (or set a max of a certain type) from valid bingos once a particular goal is chosen
 - Add tooltips for information on the goal itself (ways to achieve it, any other metadata)
+
+### Admin
+- Add ability to edit rules
+- Add field for goal notes
+
 
 ## Installation
 - Create a MySQL database and run `install/install.sql`

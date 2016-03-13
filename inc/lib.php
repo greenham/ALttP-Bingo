@@ -2,7 +2,7 @@
 
 require_once('inc/db.php');
 
-const BINGO_VERSION = "2.3";
+const BINGO_VERSION = "3.0";
 
 function init_db()
 {
@@ -68,11 +68,11 @@ function generate_board($seed, $mode = 'normal', $size = 5)
     return $board;
 }
 
+// This creates a 5x5 magic square using 1-25
+// To create the magic square we need 2 random orderings of the numbers 0, 1, 2, 3, 4.
+// The following creates those orderings and calls them Table5 and Table1
 function difficulty($cell, $seed)
 {
-    // To create the magic square we need 2 random orderings of the numbers 0, 1, 2, 3, 4.
-    // The following creates those orderings and calls them Table5 and Table1
-
     $Num3 = $seed%1000;   // Table5 will use the ones, tens, and hundreds digits.
 
     $Rem8 = $Num3%8;
@@ -171,16 +171,16 @@ function get_goal_stats()
 
     $stats = [];
     $difficulties = 25;
-    $flute_locations = 8;
+    $exclusion_groups = 8;
 
     $select[] = "COUNT(*) AS `total_goals`";
     for($i = 1; $i <= $difficulties; $i++) {
         $select[] = "SUM(CASE WHEN (`difficulty` = {$i}) THEN 1 ELSE 0 END) AS `{$i}_difficulty_count`";
     }
 
-    for($i = 1; $i <= $flute_locations; $i++)
+    for($i = 1; $i <= $exclusion_groups; $i++)
     {
-        $select[] = "SUM(CASE WHEN (`nearest_flute_location` = {$i}) THEN 1 ELSE 0 END) AS `{$i}_flute_location_count`";
+        $select[] = "SUM(CASE WHEN (`exclusion_group` = {$i}) THEN 1 ELSE 0 END) AS `{$i}_exclusion_group_count`";
     }
 
     $stats_sql = "SELECT ";
@@ -201,10 +201,10 @@ function get_goal_stats()
             $difficulty = str_replace('_difficulty_count', '', $key);
             $stats['difficulties'][$difficulty] = $value;
         }
-        else if (strpos($key, '_flute_location_count') !== false)
+        else if (strpos($key, '_exclusion_group_count') !== false)
         {
-            $location = str_replace('_flute_location_count', '', $key);
-            $stats['flute_locations'][$location] = $value;
+            $location = str_replace('_exclusion_group_count', '', $key);
+            $stats['exclusion_groups'][$location] = $value;
         }
         else
         {
@@ -219,7 +219,7 @@ function create_goal($data)
 {
     $db = init_db();
 
-    $required_fields = ['name', 'difficulty', 'nearest_flute_location'];
+    $required_fields = ['name', 'difficulty', 'exclusion_group'];
     foreach($required_fields as $field)
     {
         if (!isset($data[$field]))
