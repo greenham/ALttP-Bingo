@@ -121,7 +121,7 @@ $stats = get_goal_stats();
                             <div id="difficulty-distribution"></div>
                         </div>
                         <div class="col-md-6">
-                            <div id="flute-location-distribution"></div>
+                            <div id="group-distribution"></div>
                         </div>
                     </div>
                     <?
@@ -320,14 +320,14 @@ $(function() {
 
             <? if (!empty($stats['exclusion_groups'])): ?>
             var data = google.visualization.arrayToDataTable([
-              ['Difficulty', 'Count']<? foreach($stats['exclusion_groups'] as $location => $count): ?>, ['<?= $location; ?>', <?= $count; ?>]<? endforeach; ?>
+              ['Group', 'Count']<? foreach($stats['exclusion_groups'] as $location => $count): ?>, ['<?= $location; ?>', <?= $count; ?>]<? endforeach; ?>
             ]);
             var options = {
-              title: 'Location Distribution',
+              title: 'Group Distribution',
               width: 500,
               height: 250
             };
-            var chart = new google.visualization.PieChart(document.getElementById('flute-location-distribution'));
+            var chart = new google.visualization.PieChart(document.getElementById('group-distribution'));
             chart.draw(data, options);
             <? endif; ?>
         }

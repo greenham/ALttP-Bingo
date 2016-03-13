@@ -171,7 +171,7 @@ function get_goal_stats()
 
     $stats = [];
     $difficulties = 25;
-    $exclusion_groups = 8;
+    $exclusion_groups = 5;
 
     $select[] = "COUNT(*) AS `total_goals`";
     for($i = 1; $i <= $difficulties; $i++) {
