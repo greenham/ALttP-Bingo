@@ -196,17 +196,6 @@ CREATE TABLE `bingo_users` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
 --
--- Dumping data for table `bingo_users`
---
-
-INSERT INTO `bingo_users` (`id`, `username`, `password`, `salt`) VALUES
-(1, 'greenham', '$6$N@l!JC4XOtuPrI&y$KYtzQEAQar5yHCsvnjHnquu49mLUNCHEPl0vpp0HT4S0wfEzWyVPjfqUptWl0iJE6yVU75iEthPj0YPTzoqjb1', 'N@l!JC4XOtuPrI&yDz8LVwKTGkghM021'),
-(2, 'seancass', '$6$9OYhmc1wXJNW2s46$IhhaIHO19YD9KIrSpbXjDRK.QTQDK4/aPsp73XDeTHi489qwWAPYV5N.vbIs8wX/QE8p6hzSQj6Lp/S2zDhv51', '9OYhmc1wXJNW2s46#TvFy0pERlzjLfgU'),
-(3, 'brahminmeat', '$6$neMU69hrzVcFx&qg$/OadIiZLBsMKfDZ1.524z19GIX8Gr/AgO8H5BoD5CJTEpTm2Ym3ccoWNVrKZ8ghk90j0lAdwzahzeFQ5kqEk60', 'neMU69hrzVcFx&qgi8oN54W!YG2sdmfy'),
-(4, 'screevo', '$6$lkuF7rxXGBcn5gpt$9pYOImyGvBwk7JOngRxn/0XyBrJPpa9QwWlbERSJRs0JZUEdn9fTo7Yk9eEdge.foAdGPCckJnfFYkH6.ox080', 'lkuF7rxXGBcn5gptYChHbqJWZdSPzIjU'),
-(5, '', '$6$JtAuGnwEHYkp!UWz$FZEWuYhuGaQ2Hn9HcwkbMhrm/LsuaNyMTXBL6S1Kw3HVHbYoDLKh/IEURouxTJGohXIkXCQodEMMdO9PGy/na.', 'JtAuGnwEHYkp!UWzeSjsQyL80V3gN9%I');
-
---
 -- Indexes for dumped tables
 --
 
